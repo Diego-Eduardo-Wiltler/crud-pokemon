@@ -27,9 +27,8 @@ class TreinadorController extends Controller
 
     public function show($id): JsonResponse
     {
-        $treinador = Treinador::findOrFail($id);
-        $result = $this->treinadorService->getBYId($treinador);
-        return response()->json($result, $result['status']? 200 : 400);
+        $result = $this->treinadorService->getBYId($id);
+        return response()->json($result, $result['status'] ? 200 : 400);
     }
 
     public function store(Request $request): JsonResponse
@@ -43,15 +42,13 @@ class TreinadorController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         $data = $request->only(['nome', 'email', 'regiao', 'tipo_favorito', 'idade']);
-        $treinador = Treinador::findOrFail($id);
-        $result = $this->treinadorService->updateTreinador($data, $treinador);
+        $result = $this->treinadorService->updateTreinador($data, $id);
         return response()->json($result, $result['status'] ? 201 : 400);
     }
 
     public function destroy($id): JsonResponse
     {
-        $treinador = Treinador::findOrFail($id);
-        $result = $this->treinadorService->deleteTreinador($treinador);
+        $result = $this->treinadorService->deleteTreinador($id);
         return response()->json($result, $result['status'] ? 200 : 400);
     }
 }

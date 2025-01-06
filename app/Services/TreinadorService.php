@@ -10,16 +10,19 @@ use Illuminate\Support\Facades\DB;
 class TreinadorService
 {
 
-    public function getTreinador(){
+    public function getTreinador()
+    {
         $treinadores = Treinador::orderBy('id', 'ASC')->get();
         return [
-            'status'=>true,
+            'status' => true,
             'treinador' => $treinadores,
         ];
     }
 
-    public function getBYId(Treinador $treinador){
-        return[
+    public function getById($id)
+    {
+        $treinador = Treinador::findOrFail($id);
+        return [
             'status' => true,
             'treinador' => $treinador,
         ];
@@ -44,8 +47,9 @@ class TreinadorService
         }
     }
 
-    public function updateTreinador(array $data, Treinador $treinador)
+    public function updateTreinador(array $data,$id)
     {
+        $treinador = Treinador::findOrFail($id);
         DB::beginTransaction();
         try {
             $treinador->update($data);
@@ -63,18 +67,18 @@ class TreinadorService
         }
     }
 
-    public function deleteTreinador(Treinador $treinador){
-        try{
-            $deletedTreinador = $treinador->toArray();
-
+    public function deleteTreinador($id)
+    {
+        $treinador = Treinador::findOrFail($id);
+        try {
             $treinador->delete();
-            return[
+            return [
                 'status' => true,
-                'treinador' => $deletedTreinador,
-                'message' =>'excluido',
+                'treinador' => $treinador,
+                'message' => 'excluido',
             ];
-        }catch(Exception $e){
-            return[
+        } catch (Exception $e) {
+            return [
                 'status' => true,
                 'message' => 'excluido',
             ];
