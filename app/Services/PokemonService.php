@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class PokemonService
 {
-    public function getTreinador()
+    public function getPokemon()
     {
         $pokemons = Pokemon::orderBy('id', 'Asc')->get();
         return [
