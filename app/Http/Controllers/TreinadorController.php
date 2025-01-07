@@ -21,7 +21,7 @@ class TreinadorController extends Controller
     public function index(): JsonResponse
     {
         $result = $this->treinadorService->getTreinador();
-        return response()->json($result, $result['status'] ? 201 : 400);
+        return response()->json($result, $result['status'] ? 200 : 400);
     }
 
     public function show($id): JsonResponse
@@ -42,7 +42,7 @@ class TreinadorController extends Controller
     {
         $data = $request->only(['nome', 'email', 'regiao', 'tipo_favorito', 'idade']);
         $result = $this->treinadorService->updateTreinador($data, $id);
-        return response()->json($result, $result['status'] ? 201 : 400);
+        return response()->json($result, $result['status'] ? 200 : 400);
     }
 
     public function destroy($id): JsonResponse
