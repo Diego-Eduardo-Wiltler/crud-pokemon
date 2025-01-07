@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Treinador;
+
 use App\Services\TreinadorService;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
 
 class TreinadorController extends Controller
 {
