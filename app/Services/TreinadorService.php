@@ -47,7 +47,7 @@ class TreinadorService
         }
     }
 
-    public function updateTreinador(array $data,$id)
+    public function updateTreinador(array $data, $id)
     {
         $treinador = Treinador::findOrFail($id);
         DB::beginTransaction();
