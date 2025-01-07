@@ -79,7 +79,7 @@ class TreinadorService
             ];
         } catch (Exception $e) {
             return [
-                'status' => true,
+                'status' => false,
                 'message' => 'excluido',
             ];
         }
