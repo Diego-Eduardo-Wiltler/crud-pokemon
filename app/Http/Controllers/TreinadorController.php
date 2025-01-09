@@ -32,7 +32,7 @@ class TreinadorController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $data = $request->only(['nome', 'email', 'regiao', 'tipo_favorito', 'idade']);
+        $data = $request->only(['nome', 'email', 'regiao', 'tipo_favorito', 'idade', 'pokemon_id']);
         $result = $this->treinadorService->storeTreinador($data);
         return response()->json($result, $result['status'] ? 201 : 400);
     }
@@ -40,7 +40,7 @@ class TreinadorController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
-        $data = $request->only(['nome', 'email', 'regiao', 'tipo_favorito', 'idade']);
+        $data = $request->only(['nome', 'email', 'regiao', 'tipo_favorito', 'idade', 'pokemon_id']);
         $result = $this->treinadorService->updateTreinador($data, $id);
         return response()->json($result, $result['status'] ? 200 : 400);
     }

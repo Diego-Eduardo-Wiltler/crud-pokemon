@@ -10,10 +10,16 @@ class Treinador extends Model
 
     protected $fillable = [
         "nome",
+        'pokemon_id',
         "email",
         "regiao",
         "tipo_favorito",
         "idade"
 
+
     ];
+    public function pokemon()
+    {
+        return $this->belongsTo(Pokemon::class);
+    }
 }

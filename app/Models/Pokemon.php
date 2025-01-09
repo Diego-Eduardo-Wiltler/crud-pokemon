@@ -15,4 +15,9 @@ class Pokemon extends Model
         "localizacao",
         "shiny",
     ];
+
+    public function treinadores()
+    {
+        return $this->hasMany(Treinador::class);
+    }
 }

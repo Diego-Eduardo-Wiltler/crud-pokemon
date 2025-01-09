@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Pokemon;
 use App\Models\Treinador;
 use Exception;
 use Illuminate\Support\Arr;
@@ -12,7 +13,10 @@ class TreinadorService
 
     public function getTreinador()
     {
-        $treinadores = Treinador::orderBy('id', 'ASC')->get();
+        $treinadores = Treinador::orderBy('id', 'ASC')->with('pokemon')->get();
+
+        #dd($treinadores);
+
         return [
             'status' => true,
             'treinador' => $treinadores,

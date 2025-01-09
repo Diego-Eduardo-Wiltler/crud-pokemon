@@ -13,7 +13,7 @@ class PokemonSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!Pokemon::where('nome', 'pikachu')->where('shiny', false)->first()) {
+        if (!Pokemon::where('nome', 'Pikachu')->where('shiny', false)->first()) {
             Pokemon::create([
                 'nome' => 'Pikachu',
                 'tipo' => 'Eletrico',
@@ -22,7 +22,7 @@ class PokemonSeeder extends Seeder
                 'shiny' => false,
             ]);
         }
-        if (!Pokemon::where('nome', 'pikachu')->where('shiny', true)->first()) {
+        if (!Pokemon::where('nome', 'Pikachu')->where('shiny', true)->first()) {
             Pokemon::create([
                 'nome' => 'Pikachu',
                 'tipo' => 'Eletrico',
