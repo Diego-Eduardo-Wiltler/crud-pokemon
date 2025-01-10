@@ -16,6 +16,8 @@ class PokemonSeeder extends Seeder
         if (!Pokemon::where('nome', 'Pikachu')->where('shiny', false)->first()) {
             Pokemon::create([
                 'nome' => 'Pikachu',
+                'ataque' => 10,
+                'vida' => 100,
                 'tipo' => 'Eletrico',
                 'peso' => '6Kg',
                 'localizacao' => 'Area selvagem - Rota 4',
@@ -25,6 +27,8 @@ class PokemonSeeder extends Seeder
         if (!Pokemon::where('nome', 'Pikachu')->where('shiny', true)->first()) {
             Pokemon::create([
                 'nome' => 'Pikachu',
+                'ataque' => 15,
+                'vida' => 100,
                 'tipo' => 'Eletrico',
                 'peso' => '6Kg',
                 'localizacao' => 'Area selvagem - Rota 4',
@@ -34,6 +38,8 @@ class PokemonSeeder extends Seeder
         if (!Pokemon::where('nome', 'Charmander')->where('shiny', false)->first()) {
             Pokemon::create([
                 'nome' => 'Charmander',
+                'ataque' => 15,
+                'vida' => 105,
                 'tipo' => 'Fogo',
                 'peso' => '8.5Kg',
                 'localizacao' => 'Área selvagem - Rota 3',
@@ -43,6 +49,8 @@ class PokemonSeeder extends Seeder
         if (!Pokemon::where('nome', 'Charmander')->where('shiny', true)->first()) {
             Pokemon::create([
                 'nome' => 'Charmander',
+                'ataque' => 20,
+                'vida' => 140,
                 'tipo' => 'Fogo',
                 'peso' => '8.5Kg',
                 'localizacao' => 'Área selvagem - Rota 3',
@@ -53,6 +61,8 @@ class PokemonSeeder extends Seeder
         if (!Pokemon::where('nome', 'Bulbasaur')->where('shiny', false)->first()) {
             Pokemon::create([
                 'nome' => 'Bulbasaur',
+                'ataque' => 10,
+                'vida' => 110,
                 'tipo' => 'Grama/Veneno',
                 'peso' => '6.9Kg',
                 'localizacao' => 'Área selvagem - Floresta Verde',
@@ -62,6 +72,8 @@ class PokemonSeeder extends Seeder
         if (!Pokemon::where('nome', 'Bulbasaur')->where('shiny', true)->first()) {
             Pokemon::create([
                 'nome' => 'Bulbasaur',
+                'ataque' => 30,
+                'vida' => 50,
                 'tipo' => 'Grama/Veneno',
                 'peso' => '6.9Kg',
                 'localizacao' => 'Área selvagem - Floresta Verde',
@@ -73,6 +85,8 @@ class PokemonSeeder extends Seeder
         if (!Pokemon::where('nome', 'Squirtle')->where('shiny', false)->first()) {
             Pokemon::create([
                 'nome' => 'Squirtle',
+                'ataque' => 20,
+                'vida' => 90,
                 'tipo' => 'Água',
                 'peso' => '9Kg',
                 'localizacao' => 'Área selvagem - Praia Azul',
@@ -82,6 +96,8 @@ class PokemonSeeder extends Seeder
         if (!Pokemon::where('nome', 'Squirtle')->where('shiny', true)->first()) {
             Pokemon::create([
                 'nome' => 'Squirtle',
+                'ataque' => 10,
+                'vida' => 125,
                 'tipo' => 'Água',
                 'peso' => '9Kg',
                 'localizacao' => 'Área selvagem - Praia Azul',
@@ -92,6 +108,8 @@ class PokemonSeeder extends Seeder
         if (!Pokemon::where('nome', 'Jigglypuff')->where('shiny', false)->first()) {
             Pokemon::create([
                 'nome' => 'Jigglypuff',
+                'ataque' => 5,
+                'vida' => 150,
                 'tipo' => 'Normal/Fada',
                 'peso' => '5Kg',
                 'localizacao' => 'Área selvagem - Caverna do Som',
@@ -101,6 +119,8 @@ class PokemonSeeder extends Seeder
         if (!Pokemon::where('nome', 'Jigglypuff')->where('shiny', true)->first()) {
             Pokemon::create([
                 'nome' => 'Jigglypuff',
+                'ataque' => 10,
+                'vida' => 140,
                 'tipo' => 'Normal/Fada',
                 'peso' => '5Kg',
                 'localizacao' => 'Área selvagem - Caverna do Som',

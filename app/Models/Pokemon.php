@@ -10,6 +10,8 @@ class Pokemon extends Model
 
     protected $fillable = [
         "nome",
+        "ataque",
+        "vida",
         "tipo",
         "peso",
         "localizacao",

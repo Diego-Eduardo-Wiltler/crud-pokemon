@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Services\TreinadorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
 
 class TreinadorController extends Controller
 {

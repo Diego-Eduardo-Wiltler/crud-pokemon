@@ -44,6 +44,7 @@ class PokemonService
         }
     }
 
+
     public function updatePokemon(array $data, $id)
     {
         $pokemon = Pokemon::findOrFail($id);
