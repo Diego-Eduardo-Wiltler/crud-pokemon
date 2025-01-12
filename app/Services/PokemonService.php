@@ -44,6 +44,47 @@ class PokemonService
         }
     }
 
+    public function battlePokemon($id1, $id2)
+    {
+        $pokemon1 = Pokemon::find($id1);
+        $pokemon2 = Pokemon::find($id2);
+
+
+        do {
+            $pokemon1->vida -= $pokemon2->ataque;
+            $pokemon2->vida -= $pokemon1->ataque;
+        } while ($pokemon1->vida > 0 && $pokemon2->vida > 0);
+
+
+        $pokemon1->save();
+        $pokemon2->save();
+
+
+        if ($pokemon1->vida > 0 && $pokemon2->vida <= 0) {
+            $vencedor = $pokemon1;
+        } elseif ($pokemon2->vida > 0 && $pokemon1->vida <= 0) {
+            $vencedor = $pokemon2;
+        } else {
+            return [
+                "message" => "A batalha terminou em empate!",
+                "status" => false,
+            ];
+        }
+
+
+        return [
+            "message" => "O pokemon vencedor é",
+            "status" => true,
+            "pokemon" => [
+                'nome' => $vencedor->nome,
+                'tipo' => $vencedor->tipo,
+                'localizacao' => $vencedor->localizacao,
+                'shiny' => $vencedor->shiny,
+            ],
+        ];
+    }
+
+
 
     public function updatePokemon(array $data, $id)
     {

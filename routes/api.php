@@ -19,4 +19,4 @@ Route::delete('pokemons/{id}', [PokemonController::class, 'destroy']);
 
 #Pokemon Batalha
 
-Route::post('pokemons',[PokemonController::class,'store']);
+Route::post('pokemons/battle',[PokemonController::class,'storeBattle']);
