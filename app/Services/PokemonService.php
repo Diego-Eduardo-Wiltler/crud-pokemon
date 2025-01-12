@@ -113,7 +113,7 @@ class PokemonService
         $pokemon->vida_atual = $pokemon->vida;
         $pokemon->save();
 
-        return response()->json([
+        return ([
             'message' => 'pokemon curado',
             'status' => true,
             'pokemon' => [
