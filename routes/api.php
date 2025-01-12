@@ -20,3 +20,6 @@ Route::delete('pokemons/{id}', [PokemonController::class, 'destroy']);
 #Pokemon Batalha
 
 Route::post('pokemons/battle',[PokemonController::class,'storeBattle']);
+
+#Pokemon Healing
+Route::post('pokemons/healing', [PokemonController::class,'storeLife']);

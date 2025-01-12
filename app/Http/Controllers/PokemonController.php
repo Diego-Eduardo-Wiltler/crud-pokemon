@@ -50,6 +50,11 @@ class PokemonController extends Controller
         return response()->json($result, $result['status'] ? 200 : 400);
     }
 
+    public function storeLife(Request $request): JsonResponse{
+        $id = $request->input('pokemon:id');
+        $result = $this->pokemonService->storeHealing($id);
+        return response()->json($result);
+    }
     public function destroy($id): JsonResponse
     {
         $result = $this->pokemonService->deletePokemon($id);

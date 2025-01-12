@@ -51,18 +51,18 @@ class PokemonService
 
 
         do {
-            $pokemon1->vida -= $pokemon2->ataque;
-            $pokemon2->vida -= $pokemon1->ataque;
-        } while ($pokemon1->vida > 0 && $pokemon2->vida > 0);
+            $pokemon1->vida_atual -= $pokemon2->ataque;
+            $pokemon2->vida_atual -= $pokemon1->ataque;
+        } while ($pokemon1->vida_atual > 0 && $pokemon2->vida_atual > 0);
 
 
         $pokemon1->save();
         $pokemon2->save();
 
 
-        if ($pokemon1->vida > 0 && $pokemon2->vida <= 0) {
+        if ($pokemon1->vida_atual > 0 && $pokemon2->vida_atual <= 0) {
             $vencedor = $pokemon1;
-        } elseif ($pokemon2->vida > 0 && $pokemon1->vida <= 0) {
+        } elseif ($pokemon2->vida_atual > 0 && $pokemon1->vida_atual <= 0) {
             $vencedor = $pokemon2;
         } else {
             return [
@@ -70,7 +70,6 @@ class PokemonService
                 "status" => false,
             ];
         }
-
 
         return [
             "message" => "O pokemon vencedor é",
@@ -104,6 +103,25 @@ class PokemonService
                 'message' => 'n atualizado',
             ];
         }
+    }
+
+    public function storeHealing($id)
+    {
+        $pokemon = Pokemon::find($id);
+
+        $vidaRecuperada = $pokemon->vida - $pokemon->vida_atual;
+        $pokemon->vida_atual = $pokemon->vida;
+        $pokemon->save();
+
+        return response()->json([
+            'message' => 'pokemon curado',
+            'status' => true,
+            'pokemon' => [
+                'nome' => $pokemon->nome,
+                'vida_recuperada' => $vidaRecuperada,
+                'vida_total' => $pokemon->vida,
+            ],
+        ]);
     }
 
     public function deletePokemon($id)
