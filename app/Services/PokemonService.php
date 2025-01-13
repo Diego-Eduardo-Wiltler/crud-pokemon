@@ -83,6 +83,187 @@ class PokemonService
         ];
     }
 
+    public function storeHealing($id)
+    {
+        $pokemon = Pokemon::find($id);
+
+        $vidaRecuperada = $pokemon->vida_atual - $pokemon->vida;
+        $pokemon->vida = $pokemon->vida_atual;
+        $pokemon->save();
+
+        return ([
+            'message' => 'pokemon curado',
+            'status' => true,
+            'pokemon' => [
+                'nome' => $pokemon->nome,
+                'vida_recuperada' => $vidaRecuperada,
+                'vida_total' => $pokemon->vida,
+            ],
+        ]);
+    }
+
+    public function storeRound($id1, $id2)
+    {
+        $pokemonATK = Pokemon::find($id1);
+        $pokemonDEF = Pokemon::find($id2);
+
+        $pokemonMitiga = $pokemonDEF->defesa / $pokemonATK->ataque * 100;
+        $danoCausado = $pokemonATK->ataque;
+
+        if ($pokemonMitiga < 30) {
+            $pokemonDEF->vida -= $danoCausado;
+            $pokemonDEF->save();
+
+            return [
+                'status' => true,
+                'messages' => [
+                    $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
+                    $pokemonDEF->nome . ' não conseguiu se defender do ataque',
+                    $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
+                    $pokemonDEF->nome . ' ainda se mantem na luta ',
+                    $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
+                ],
+                'data' => [
+                    'pokemon_atk' => [
+                        'id' => $pokemonATK->id,
+                        'nome' => $pokemonATK->nome,
+                        'ataque' => $pokemonATK->ataque,
+                    ],
+                    'pokemon_def' => [
+                        'id' => $pokemonDEF->id,
+                        'nome' => $pokemonDEF->nome,
+                        'defesa' => $pokemonDEF->defesa,
+                    ],
+                ],
+
+            ];
+        } elseif ($pokemonMitiga >=30 && $pokemonMitiga < 50) {
+            $danoCausado /= 1.2;
+            $danoCausado = ceil($danoCausado);
+            $pokemonDEF->vida -= $danoCausado;
+            $pokemonDEF->save();
+
+            return [
+                'status' => true,
+                'messages' => [
+                    $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
+                    $pokemonDEF->nome . ' se defendeu um pouco do ataque',
+                    $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
+                    $pokemonDEF->nome . ' ainda se mantem na luta ',
+                    $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
+                ],
+                'data' => [
+                    'pokemon_atk' => [
+                        'id' => $pokemonATK->id,
+                        'nome' => $pokemonATK->nome,
+                        'ataque' => $pokemonATK->ataque,
+                    ],
+                    'pokemon_def' => [
+                        'id' => $pokemonDEF->id,
+                        'nome' => $pokemonDEF->nome,
+                        'defesa' => $pokemonDEF->defesa,
+                        'vida' => $pokemonDEF->vida,
+                    ],
+                ],
+
+            ];
+        } elseif ($pokemonMitiga >= 50 && $pokemonMitiga < 100) {
+            $danoCausado /= 1.5;
+            $danoCausado = ceil($danoCausado);
+            $pokemonDEF->vida -= $danoCausado;
+            $pokemonDEF->save();
+
+            return [
+                'status' => true,
+                'messages' => [
+                    $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
+                    $pokemonDEF->nome . ' se defendeu bem do ataque',
+                    $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
+                    $pokemonDEF->nome . ' ainda se mantem na luta ',
+                    $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
+                ],
+                'data' => [
+                    'pokemon_atk' => [
+                        'id' => $pokemonATK->id,
+                        'nome' => $pokemonATK->nome,
+                        'ataque' => $pokemonATK->ataque,
+                    ],
+                    'pokemon_def' => [
+                        'id' => $pokemonDEF->id,
+                        'nome' => $pokemonDEF->nome,
+                        'defesa' => $pokemonDEF->defesa,
+                    ],
+                ],
+
+            ];
+        }elseif ($pokemonMitiga == 100) {
+            $danoCausado /= 2;
+            $danoCausado = ceil($danoCausado);
+            $pokemonDEF->vida -= $danoCausado;
+            $pokemonDEF->save();
+
+            return [
+                'status' => true,
+                'messages' => [
+                    $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
+                    $pokemonDEF->nome . ' se defendeu efetivamente do ataque',
+                    $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
+                    $pokemonDEF->nome . ' ainda se mantem na luta ',
+                    $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
+                ],
+                'data' => [
+                    'pokemon_atk' => [
+                        'id' => $pokemonATK->id,
+                        'nome' => $pokemonATK->nome,
+                        'ataque' => $pokemonATK->ataque,
+                    ],
+                    'pokemon_def' => [
+                        'id' => $pokemonDEF->id,
+                        'nome' => $pokemonDEF->nome,
+                        'defesa' => $pokemonDEF->defesa,
+                    ],
+                ],
+
+            ];
+        }elseif ($pokemonMitiga >= 130) {
+            $danoCausado /= 3;
+            $danoCausado = ceil($danoCausado);
+            $pokemonDEF->vida -= $danoCausado;
+            $pokemonDEF->save();
+
+            return [
+                'status' => true,
+                'messages' => [
+                    $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
+                    $pokemonDEF->nome . ' se defendeu extremamente bem do ataque',
+                    $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
+                    $pokemonDEF->nome . ' ainda se mantem na luta ',
+                    $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
+                ],
+                'data' => [
+                    'pokemon_atk' => [
+                        'id' => $pokemonATK->id,
+                        'nome' => $pokemonATK->nome,
+                        'ataque' => $pokemonATK->ataque,
+                    ],
+                    'pokemon_def' => [
+                        'id' => $pokemonDEF->id,
+                        'nome' => $pokemonDEF->nome,
+                        'defesa' => $pokemonDEF->defesa,
+                    ],
+                ],
+
+            ];
+        } else {
+            return [
+                'status' => false,
+                'messages' => [
+                    'Algo deu errado durante a batalha. Verifique os valores.',
+                ],
+            ];
+        }
+    }
+
 
 
     public function updatePokemon(array $data, $id)
@@ -103,25 +284,6 @@ class PokemonService
                 'message' => 'n atualizado',
             ];
         }
-    }
-
-    public function storeHealing($id)
-    {
-        $pokemon = Pokemon::find($id);
-
-        $vidaRecuperada = $pokemon->vida - $pokemon->vida_atual;
-        $pokemon->vida_atual = $pokemon->vida;
-        $pokemon->save();
-
-        return ([
-            'message' => 'pokemon curado',
-            'status' => true,
-            'pokemon' => [
-                'nome' => $pokemon->nome,
-                'vida_recuperada' => $vidaRecuperada,
-                'vida_total' => $pokemon->vida,
-            ],
-        ]);
     }
 
     public function deletePokemon($id)

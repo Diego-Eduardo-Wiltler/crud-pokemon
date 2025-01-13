@@ -42,6 +42,13 @@ class PokemonController extends Controller
         return response()->json($result);
     }
 
+    public function storeRoundBattle(Request $request) : JsonResponse{
+        $id1 = $request->input('pokemon:id1');
+        $id2 = $request->input('pokemon:id2');
+        $result = $this->pokemonService->storeRound($id1,$id2);
+        return response()->json($result);
+    }
+
 
     public function update(Request $request, $id): JsonResponse
     {

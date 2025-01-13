@@ -17,6 +17,7 @@ class PokemonSeeder extends Seeder
             Pokemon::create([
                 'nome' => 'Pikachu',
                 'ataque' => 10,
+                'defesa' => 10,
                 'vida' => 100,
                 'vida_atual' => 100,
                 'tipo' => 'Eletrico',
@@ -29,6 +30,7 @@ class PokemonSeeder extends Seeder
             Pokemon::create([
                 'nome' => 'Pikachu',
                 'ataque' => 15,
+                'defesa' => 5,
                 'vida' => 100,
                 'vida_atual' => 100,
                 'tipo' => 'Eletrico',
@@ -41,6 +43,7 @@ class PokemonSeeder extends Seeder
             Pokemon::create([
                 'nome' => 'Charmander',
                 'ataque' => 15,
+                'defesa' => 12,
                 'vida' => 105,
                 'vida_atual' => 105,
                 'tipo' => 'Fogo',
@@ -53,6 +56,7 @@ class PokemonSeeder extends Seeder
             Pokemon::create([
                 'nome' => 'Charmander',
                 'ataque' => 20,
+                'defesa' => 5,
                 'vida' => 140,
                 'vida_atual' => 140,
                 'tipo' => 'Fogo',
@@ -66,6 +70,7 @@ class PokemonSeeder extends Seeder
             Pokemon::create([
                 'nome' => 'Bulbasaur',
                 'ataque' => 10,
+                'defesa' => 8,
                 'vida' => 110,
                 'vida_atual' => 110,
                 'tipo' => 'Grama/Veneno',
@@ -78,6 +83,7 @@ class PokemonSeeder extends Seeder
             Pokemon::create([
                 'nome' => 'Bulbasaur',
                 'ataque' => 30,
+                'defesa' => 10,
                 'vida' => 50,
                 'vida_atual' => 50,
                 'tipo' => 'Grama/Veneno',
@@ -92,6 +98,7 @@ class PokemonSeeder extends Seeder
             Pokemon::create([
                 'nome' => 'Squirtle',
                 'ataque' => 20,
+                'defesa' => 2,
                 'vida' => 90,
                 'vida_atual' => 90,
                 'tipo' => 'Água',
@@ -104,6 +111,7 @@ class PokemonSeeder extends Seeder
             Pokemon::create([
                 'nome' => 'Squirtle',
                 'ataque' => 10,
+                'defesa' => 5,
                 'vida' => 125,
                 'vida_atual' => 125,
                 'tipo' => 'Água',
@@ -117,6 +125,7 @@ class PokemonSeeder extends Seeder
             Pokemon::create([
                 'nome' => 'Jigglypuff',
                 'ataque' => 5,
+                'defesa' => 15,
                 'vida' => 150,
                 'vida_atual' => 150,
                 'tipo' => 'Normal/Fada',
@@ -129,6 +138,7 @@ class PokemonSeeder extends Seeder
             Pokemon::create([
                 'nome' => 'Jigglypuff',
                 'ataque' => 10,
+                'defesa' => 9,
                 'vida' => 140,
                 'vida_atual' => 140,
                 'tipo' => 'Normal/Fada',

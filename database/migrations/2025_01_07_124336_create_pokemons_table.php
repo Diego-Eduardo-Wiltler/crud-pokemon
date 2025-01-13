@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nome');
             $table->integer('ataque');
+            $table->integer('defesa');
             $table->integer('vida');
             $table->integer('vida_atual');
             $table->string('tipo');
