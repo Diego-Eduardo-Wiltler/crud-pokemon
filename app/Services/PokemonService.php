@@ -109,151 +109,22 @@ class PokemonService
 
         $pokemonMitiga = $pokemonDEF->defesa / $pokemonATK->ataque * 100;
         $danoCausado = $pokemonATK->ataque;
+        $defesaTexto = '';
 
         if ($pokemonMitiga < 30) {
-            $pokemonDEF->vida -= $danoCausado;
-            $pokemonDEF->save();
-
-            return [
-                'status' => true,
-                'messages' => [
-                    $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
-                    $pokemonDEF->nome . ' não conseguiu se defender do ataque',
-                    $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
-                    $pokemonDEF->nome . ' ainda se mantem na luta ',
-                    $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
-                ],
-                'data' => [
-                    'pokemon_atk' => [
-                        'id' => $pokemonATK->id,
-                        'nome' => $pokemonATK->nome,
-                        'ataque' => $pokemonATK->ataque,
-                    ],
-                    'pokemon_def' => [
-                        'id' => $pokemonDEF->id,
-                        'nome' => $pokemonDEF->nome,
-                        'defesa' => $pokemonDEF->defesa,
-                    ],
-                ],
-
-            ];
-        } elseif ($pokemonMitiga >=30 && $pokemonMitiga < 50) {
+            $defesaTexto = ' não conseguiu se defender do ataque ';
+        } elseif ($pokemonMitiga >= 30 && $pokemonMitiga < 50) {
             $danoCausado /= 1.2;
-            $danoCausado = ceil($danoCausado);
-            $pokemonDEF->vida -= $danoCausado;
-            $pokemonDEF->save();
-
-            return [
-                'status' => true,
-                'messages' => [
-                    $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
-                    $pokemonDEF->nome . ' se defendeu um pouco do ataque',
-                    $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
-                    $pokemonDEF->nome . ' ainda se mantem na luta ',
-                    $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
-                ],
-                'data' => [
-                    'pokemon_atk' => [
-                        'id' => $pokemonATK->id,
-                        'nome' => $pokemonATK->nome,
-                        'ataque' => $pokemonATK->ataque,
-                    ],
-                    'pokemon_def' => [
-                        'id' => $pokemonDEF->id,
-                        'nome' => $pokemonDEF->nome,
-                        'defesa' => $pokemonDEF->defesa,
-                        'vida' => $pokemonDEF->vida,
-                    ],
-                ],
-
-            ];
+            $defesaTexto = ' se defendeu um pouco do ataque ';
         } elseif ($pokemonMitiga >= 50 && $pokemonMitiga < 100) {
             $danoCausado /= 1.5;
-            $danoCausado = ceil($danoCausado);
-            $pokemonDEF->vida -= $danoCausado;
-            $pokemonDEF->save();
-
-            return [
-                'status' => true,
-                'messages' => [
-                    $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
-                    $pokemonDEF->nome . ' se defendeu bem do ataque',
-                    $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
-                    $pokemonDEF->nome . ' ainda se mantem na luta ',
-                    $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
-                ],
-                'data' => [
-                    'pokemon_atk' => [
-                        'id' => $pokemonATK->id,
-                        'nome' => $pokemonATK->nome,
-                        'ataque' => $pokemonATK->ataque,
-                    ],
-                    'pokemon_def' => [
-                        'id' => $pokemonDEF->id,
-                        'nome' => $pokemonDEF->nome,
-                        'defesa' => $pokemonDEF->defesa,
-                    ],
-                ],
-
-            ];
-        }elseif ($pokemonMitiga == 100) {
+            $defesaTexto = ' se defendeu bem do ataque ';
+        } elseif ($pokemonMitiga == 100) {
             $danoCausado /= 2;
-            $danoCausado = ceil($danoCausado);
-            $pokemonDEF->vida -= $danoCausado;
-            $pokemonDEF->save();
-
-            return [
-                'status' => true,
-                'messages' => [
-                    $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
-                    $pokemonDEF->nome . ' se defendeu efetivamente do ataque',
-                    $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
-                    $pokemonDEF->nome . ' ainda se mantem na luta ',
-                    $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
-                ],
-                'data' => [
-                    'pokemon_atk' => [
-                        'id' => $pokemonATK->id,
-                        'nome' => $pokemonATK->nome,
-                        'ataque' => $pokemonATK->ataque,
-                    ],
-                    'pokemon_def' => [
-                        'id' => $pokemonDEF->id,
-                        'nome' => $pokemonDEF->nome,
-                        'defesa' => $pokemonDEF->defesa,
-                    ],
-                ],
-
-            ];
-        }elseif ($pokemonMitiga >= 130) {
+            $defesaTexto = ' se defendeu efetivamente do ataque ';
+        } elseif ($pokemonMitiga >= 130) {
             $danoCausado /= 3;
-            $danoCausado = ceil($danoCausado);
-            $pokemonDEF->vida -= $danoCausado;
-            $pokemonDEF->save();
-
-            return [
-                'status' => true,
-                'messages' => [
-                    $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
-                    $pokemonDEF->nome . ' se defendeu extremamente bem do ataque',
-                    $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
-                    $pokemonDEF->nome . ' ainda se mantem na luta ',
-                    $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
-                ],
-                'data' => [
-                    'pokemon_atk' => [
-                        'id' => $pokemonATK->id,
-                        'nome' => $pokemonATK->nome,
-                        'ataque' => $pokemonATK->ataque,
-                    ],
-                    'pokemon_def' => [
-                        'id' => $pokemonDEF->id,
-                        'nome' => $pokemonDEF->nome,
-                        'defesa' => $pokemonDEF->defesa,
-                    ],
-                ],
-
-            ];
+            $defesaTexto = ' se defendeu extremamente bem do ataque ';
         } else {
             return [
                 'status' => false,
@@ -262,6 +133,33 @@ class PokemonService
                 ],
             ];
         }
+        $danoCausado = ceil($danoCausado);
+        $pokemonDEF->vida -= $danoCausado;
+        $pokemonDEF->save();
+
+        return [
+            'status' => true,
+            'messages' => [
+                $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
+                $pokemonDEF->nome .  $defesaTexto,
+                $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
+                $pokemonDEF->nome . ' ainda se mantem na luta ',
+                $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
+            ],
+            'data' => [
+                'pokemon_atk' => [
+                    'id' => $pokemonATK->id,
+                    'nome' => $pokemonATK->nome,
+                    'ataque' => $pokemonATK->ataque,
+                ],
+                'pokemon_def' => [
+                    'id' => $pokemonDEF->id,
+                    'nome' => $pokemonDEF->nome,
+                    'defesa' => $pokemonDEF->defesa,
+                ],
+            ],
+
+        ];
     }
 
 
