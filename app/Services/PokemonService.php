@@ -74,12 +74,7 @@ class PokemonService
         return [
             "message" => "O pokemon vencedor é",
             "status" => true,
-            "pokemon" => [
-                'nome' => $vencedor->nome,
-                'tipo' => $vencedor->tipo,
-                'localizacao' => $vencedor->localizacao,
-                'shiny' => $vencedor->shiny,
-            ],
+            "pokemon" => $vencedor
         ];
     }
 

@@ -13,7 +13,7 @@ class Pokemon extends Model
         "ataque",
         "defesa",
         "vida",
-        "vida atual",
+        "vida_atual",
         "tipo",
         "peso",
         "localizacao",

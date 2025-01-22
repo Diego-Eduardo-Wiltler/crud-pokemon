@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PokemonBatalhaResource;
+use App\Http\Resources\PokemonResource;
 use App\Services\PokemonService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,34 +20,44 @@ class PokemonController extends Controller
     public function index(): JsonResponse
     {
         $result = $this->pokemonService->getPokemon();
-        return response()->json($result, $result['status'] ? 200 : 400);
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json(PokemonResource::collection($result['pokemons']), $status);
     }
 
     public function show($id): JsonResponse
     {
         $result = $this->pokemonService->getById($id);
-        return response()->json($result, $result['status'] ? 200 : 400);
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json(new PokemonResource($result['pokemon']), $status);
     }
 
     public function store(Request $request): JsonResponse
     {
-        $data = $request->only(['nome', 'tipo', 'peso', 'localizacao', 'shiny']);
+        $data = $request->only(['nome', 'ataque', 'defesa', 'vida', 'vida_atual', 'tipo', 'peso', 'localizacao', 'shiny']);
+
         $result = $this->pokemonService->storePokemon($data);
-        return response()->json($result, $result['status'] ? 201 : 400);
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json(new PokemonResource($result['pokemon']), $status);
     }
 
-    public function storeBattle(Request $request) : JsonResponse
+    public function storeBattle(Request $request): JsonResponse
     {
         $id1 = $request->input('pokemon:id1');
         $id2 = $request->input('pokemon:id2');
-        $result = $this->pokemonService->battlePokemon($id1,$id2);
-        return response()->json($result);
+        $result = $this->pokemonService->battlePokemon($id1, $id2);
+        return response()->json(new PokemonBatalhaResource($result['pokemon']));
     }
 
-    public function storeRoundBattle(Request $request) : JsonResponse{
+    public function storeRoundBattle(Request $request): JsonResponse
+    {
         $id1 = $request->input('pokemon:id1');
         $id2 = $request->input('pokemon:id2');
-        $result = $this->pokemonService->storeRound($id1,$id2);
+        $result = $this->pokemonService->storeRound($id1, $id2);
         return response()->json($result);
     }
 
@@ -57,7 +69,8 @@ class PokemonController extends Controller
         return response()->json($result, $result['status'] ? 200 : 400);
     }
 
-    public function storeLife(Request $request): JsonResponse{
+    public function storeLife(Request $request): JsonResponse
+    {
         $id = $request->input('pokemon:id');
         $result = $this->pokemonService->storeHealing($id);
         return response()->json($result);
