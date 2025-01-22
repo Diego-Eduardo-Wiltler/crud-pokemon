@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PokemonResource;
+use App\Http\Resources\TreinadorResource;
 use App\Services\TreinadorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,27 +27,41 @@ class TreinadorController extends Controller
     public function show($id): JsonResponse
     {
         $result = $this->treinadorService->getBYId($id);
-        return response()->json($result, $result['status'] ? 200 : 400);
+
+        $status = $result['status' ? 200 : 400];
+
+        return response()->json(new TreinadorResource($result), $status);
     }
 
     public function store(Request $request): JsonResponse
     {
         $data = $request->only(['nome', 'email', 'regiao', 'tipo_favorito', 'idade', 'pokemon_id']);
+
         $result = $this->treinadorService->storeTreinador($data);
-        return response()->json($result, $result['status'] ? 201 : 400);
+
+        $status = $result['status' ? 200 : 400];
+
+        return response()->json(new TreinadorResource($result), $status);
     }
 
 
     public function update(Request $request, $id): JsonResponse
     {
         $data = $request->only(['nome', 'email', 'regiao', 'tipo_favorito', 'idade', 'pokemon_id']);
+
         $result = $this->treinadorService->updateTreinador($data, $id);
-        return response()->json($result, $result['status'] ? 200 : 400);
+
+        $status = $result['status' ? 200 : 400];
+
+        return response()->json(new TreinadorResource($result), $status);
     }
 
     public function destroy($id): JsonResponse
     {
         $result = $this->treinadorService->deleteTreinador($id);
-        return response()->json($result, $result['status'] ? 200 : 400);
+
+        $status = $result['status' ? 200 : 400];
+
+        return response()->json(new TreinadorResource($result),$status);
     }
 }
