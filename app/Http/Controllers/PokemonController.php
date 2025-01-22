@@ -64,9 +64,13 @@ class PokemonController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
-        $data = $request->only(['nome' . 'tipo', 'peso', 'localizacao', 'shiny']);
+        $data = $request->only(['nome', 'ataque', 'defesa', 'vida', 'vida_atual', 'tipo', 'peso', 'localizacao', 'shiny']);
+
         $result = $this->pokemonService->updatePokemon($data, $id);
-        return response()->json($result, $result['status'] ? 200 : 400);
+
+        $status = $result['status' ? 200 : 400];
+
+        return response()->json(new PokemonResource($result),$status );
     }
 
     public function storeLife(Request $request): JsonResponse
@@ -78,6 +82,9 @@ class PokemonController extends Controller
     public function destroy($id): JsonResponse
     {
         $result = $this->pokemonService->deletePokemon($id);
-        return response()->json($result, $result['status'] ? 200 : 400);
+
+        $status = $result['status' ? 200 : 400];
+
+        return response()->json(new PokemonResource($result), $status);
     }
 }
