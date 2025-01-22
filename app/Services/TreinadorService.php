@@ -15,8 +15,6 @@ class TreinadorService
     {
         $treinadores = Treinador::orderBy('id', 'ASC')->with('pokemon')->get();
 
-        #dd($treinadores);
-
         return [
             'status' => true,
             'treinador' => $treinadores,
