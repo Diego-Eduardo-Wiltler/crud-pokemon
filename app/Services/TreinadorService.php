@@ -13,7 +13,18 @@ class TreinadorService
 
     public function getTreinador()
     {
-        $treinadores = Treinador::orderBy('id', 'ASC')->with('pokemon')->get();
+        $treinadores = Treinador::orderBy('id', 'ASC')->get();
+
+        return [
+            'status' => true,
+            'treinador' => $treinadores,
+        ];
+    }
+
+
+    public function getTreinadoresPokemons()
+    {
+        $treinadores = Treinador::with('pokemon')->get();
 
         return [
             'status' => true,
