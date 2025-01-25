@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PokemonStoreFormRequest;
+use App\Http\Requests\PokemonUpdateFormRequest;
 use App\Http\Resources\PokemonBatalhaResource;
 use App\Http\Resources\PokemonResource;
+use App\Http\Resources\PokemonRoundBattleResource;
+use App\Models\Pokemon;
 use App\Services\PokemonService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -35,9 +39,9 @@ class PokemonController extends Controller
         return response()->json(new PokemonResource($result['pokemon']), $status);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(PokemonStoreFormRequest $request): JsonResponse
     {
-        $data = $request->only(['nome', 'ataque', 'defesa', 'vida', 'vida_atual', 'tipo', 'peso', 'localizacao', 'shiny']);
+        $data = $request->validated();
 
         $result = $this->pokemonService->storePokemon($data);
         $status = $result['status'] ? 200 : 400;
@@ -50,27 +54,31 @@ class PokemonController extends Controller
         $id1 = $request->input('pokemon:id1');
         $id2 = $request->input('pokemon:id2');
         $result = $this->pokemonService->battlePokemon($id1, $id2);
-        return response()->json(new PokemonBatalhaResource($result['pokemon']));
+        return response()->json(new PokemonBatalhaResource($result['pokemon'], $result['message']));
     }
 
     public function storeRoundBattle(Request $request): JsonResponse
     {
         $id1 = $request->input('pokemon:id1');
         $id2 = $request->input('pokemon:id2');
+
         $result = $this->pokemonService->storeRound($id1, $id2);
-        return response()->json($result);
+
+        $status = $result['status'] ? 200 : 400;
+
+        return response()->json(new PokemonRoundBattleResource($result),$status);
     }
 
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(PokemonUpdateFormRequest $request, $id): JsonResponse
     {
-        $data = $request->only(['nome', 'ataque', 'defesa', 'vida', 'vida_atual', 'tipo', 'peso', 'localizacao', 'shiny']);
+        $data = $request->validated();
 
         $result = $this->pokemonService->updatePokemon($data, $id);
 
-        $status = $result['status' ? 200 : 400];
+        $status = $result['status'] ? 200 : 400;
 
-        return response()->json(new PokemonResource($result),$status );
+        return response()->json(new PokemonResource($result['pokemon']),$status );
     }
 
     public function storeLife(Request $request): JsonResponse
