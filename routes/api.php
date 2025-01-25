@@ -5,6 +5,7 @@ use App\Http\Controllers\TreinadorController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('treinadores', [TreinadorController::class, 'index']);
+Route::get('treinadores-pokemons', [TreinadorController::class, 'indexTreinadorPokemon']);
 Route::get('treinadores/{id}', [TreinadorController::class, 'show']);
 Route::post('treinadores', [TreinadorController::class,'store']);
 Route::put('treinadores/{id}', [TreinadorController::class,'update']);
