@@ -71,8 +71,10 @@ class PokemonService
             ];
         }
 
+        $message = 'O Pokémon vencedor é';
+
         return [
-            "message" => "O pokemon vencedor é",
+            "message" => $message,
             "status" => true,
             "pokemon" => $vencedor
         ];
@@ -134,25 +136,10 @@ class PokemonService
 
         return [
             'status' => true,
-            'messages' => [
-                $pokemonATK->nome . ' atacou com ' . $pokemonATK->ataque . ' de dano',
-                $pokemonDEF->nome .  $defesaTexto,
-                $pokemonATK->nome . ' causou ' . $danoCausado  . ' de dano ',
-                $pokemonDEF->nome . ' ainda se mantem na luta ',
-                $pokemonDEF->nome . ' ainda possui ' . $pokemonDEF->vida . ' pontos de vida',
-            ],
-            'data' => [
-                'pokemon_atk' => [
-                    'id' => $pokemonATK->id,
-                    'nome' => $pokemonATK->nome,
-                    'ataque' => $pokemonATK->ataque,
-                ],
-                'pokemon_def' => [
-                    'id' => $pokemonDEF->id,
-                    'nome' => $pokemonDEF->nome,
-                    'defesa' => $pokemonDEF->defesa,
-                ],
-            ],
+            'pokemonATK' => $pokemonATK,
+            'pokemonDEF' => $pokemonDEF,
+            'danoCausado' => $danoCausado,
+            'defesaTexto' => $defesaTexto,
 
         ];
     }
