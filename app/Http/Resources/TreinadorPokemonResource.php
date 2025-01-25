@@ -14,6 +14,15 @@ class TreinadorPokemonResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            "nome" => $this->nome,
+            "email" => $this->email,
+            "regiao" => $this->regiao,
+            "tipo_favorito" => $this->tipo_favorito,
+            "idade" => $this->idade,
+            'pokemons' => $this->pokemon ? new PokemonResource($this->pokemon) : 'Não possui pokemon'
+        ];
     }
 }
+
