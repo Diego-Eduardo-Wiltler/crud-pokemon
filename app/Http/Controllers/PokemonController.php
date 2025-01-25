@@ -53,8 +53,13 @@ class PokemonController extends Controller
     {
         $id1 = $request->input('pokemon:id1');
         $id2 = $request->input('pokemon:id2');
+
         $result = $this->pokemonService->battlePokemon($id1, $id2);
-        return response()->json(new PokemonBatalhaResource($result['pokemon'], $result['message']));
+
+        if ($result['status']) {
+            return response()->json(new PokemonBatalhaResource($result['pokemon'], $result['message']));
+        }
+        return response()->json(['message' => $result['message']], 400);
     }
 
     public function storeRoundBattle(Request $request): JsonResponse
@@ -66,7 +71,7 @@ class PokemonController extends Controller
 
         $status = $result['status'] ? 200 : 400;
 
-        return response()->json(new PokemonRoundBattleResource($result),$status);
+        return response()->json(new PokemonRoundBattleResource($result), $status);
     }
 
 
@@ -78,7 +83,7 @@ class PokemonController extends Controller
 
         $status = $result['status'] ? 200 : 400;
 
-        return response()->json(new PokemonResource($result['pokemon']),$status );
+        return response()->json(new PokemonResource($result['pokemon']), $status);
     }
 
     public function storeLife(Request $request): JsonResponse

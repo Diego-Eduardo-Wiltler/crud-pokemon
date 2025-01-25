@@ -13,32 +13,62 @@ class TreinadorService
 
     public function getTreinador()
     {
-        $treinadores = Treinador::orderBy('id', 'ASC')->get();
+        try {
+            $treinadores = Treinador::orderBy('id', 'ASC')->get();
 
-        return [
-            'status' => true,
-            'treinador' => $treinadores,
-        ];
+            $response = [
+                'status' => true,
+                'treinador' => $treinadores,
+            ];
+        } catch (Exception $e) {
+            $response = [
+                'status' => false,
+                'treinador' => null,
+                'message' => 'Treinadores não encontrados',
+            ];
+        }
+
+        return $response;
     }
 
 
     public function getTreinadoresPokemons()
     {
-        $treinadores = Treinador::with('pokemon')->get();
+        try {
+            $treinadores = Treinador::with('pokemon')->get();
 
-        return [
-            'status' => true,
-            'treinador' => $treinadores,
-        ];
+            $response = [
+                'status' => true,
+                'treinador' => $treinadores,
+            ];
+        } catch (Exception $e) {
+            $response = [
+                'status' => false,
+                'treinador' => null,
+                'message' => "Lista de treinadores e pokemons não encontrada"
+            ];
+        }
+        return $response;
     }
 
     public function getById($id)
     {
-        $treinador = Treinador::findOrFail($id);
-        return [
-            'status' => true,
-            'treinador' => $treinador,
-        ];
+        $treinador = null;
+        try {
+            $treinador = Treinador::findOrFail($id);
+
+            $response = [
+                'status' => true,
+                'treinador' => $treinador,
+            ];
+        } catch (Exception $e) {
+            $response = [
+                'status' => false,
+                'treinador' => null,
+                'message' => 'Treinador não encontrado',
+            ];
+        }
+        return $response;
     }
 
     public function storeTreinador(array $data)
@@ -49,52 +79,62 @@ class TreinadorService
             DB::commit();
             return [
                 'status' => true,
-                'treiandor' => $treinador,
-                'message' => ' cadastrado',
+                'treinador' => $treinador,
+                'message' => 'Treinador cadastrado',
             ];
         } catch (Exception $e) {
             return [
                 'status' => false,
-                'message' => 'n cadastrado',
+                'message' => 'Treinador não cadastrado',
             ];
         }
     }
 
     public function updateTreinador(array $data, $id)
     {
-        $treinador = Treinador::findOrFail($id);
+        $treinador = null;
+
         DB::beginTransaction();
         try {
+            $treinador = Treinador::findOrFail($id);
+
             $treinador->update($data);
             DB::commit();
-            return [
+
+            $response = [
                 'status' => true,
-                'treiandor' => $treinador,
+                'treinador' => $treinador,
                 'message' => 'atualizado',
             ];
         } catch (Exception $e) {
-            return [
+            $response = [
                 'status' => false,
                 'message' => 'n atualizado',
             ];
         }
+
+        return $response;
     }
 
     public function deleteTreinador($id)
     {
-        $treinador = Treinador::findOrFail($id);
+        $treinador = null;
         try {
+            $treinador = Treinador::findOrFail($id);
+
             $treinador->delete();
-            return [
+
+            $response = [
                 'status' => true,
                 'treinador' => $treinador,
-                'message' => 'excluido',
+                'message' => 'Treinador excluido',
             ];
         } catch (Exception $e) {
-            return [
+            $response = [
                 'status' => false,
-                'message' => 'excluido',
+                'message' => 'Treinador não excluido',
             ];
         }
+        return $response;
     }
 }

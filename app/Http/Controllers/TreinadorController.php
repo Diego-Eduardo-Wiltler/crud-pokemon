@@ -25,30 +25,32 @@ class TreinadorController extends Controller
     {
         $result = $this->treinadorService->getTreinador();
 
-        $status = $result['status'] ? 200 : 400;
-
-        return response()->json(TreinadorResource::collection($result['treinador']), $status);
-    }
-
-    public function indexTreinadorPokemon(): JsonResponse
-    {
-        $result = $this->treinadorService->getTreinadoresPokemons();
-
-        $status = $result['status'] ? 200 : 400;
-
-        return response()->json(TreinadorPokemonResource::collection($result['treinador']), $status);
+        if ($result['status']) {
+            return response()->json(TreinadorResource::collection($result['treinador']));
+        }
+        return response()->json(['message' => $result['message']], 400);
     }
 
     public function show($id): JsonResponse
     {
         $result = $this->treinadorService->getBYId($id);
 
-        $status = $result['status'] ? 200 : 400;
-
-        return response()->json(new TreinadorResource($result['treinador']), $status);
+        if ($result['status']) {
+            return response()->json(new TreinadorResource($result['treinador']));;
+        }
+        return response()->json(['message' => $result['message']], 400);
     }
 
 
+    public function indexTreinadorPokemon(): JsonResponse
+    {
+        $result = $this->treinadorService->getTreinadoresPokemons();
+
+        if ($result['status']) {
+            return response()->json(TreinadorPokemonResource::collection($result['treinador']));
+        }
+        return response()->json(['message' => $result['message']], 400);
+    }
 
 
     public function store(TreinadorStoreFormRequest $request): JsonResponse
@@ -57,9 +59,10 @@ class TreinadorController extends Controller
 
         $result = $this->treinadorService->storeTreinador($data);
 
-        $status = $result['status'] ? 200 : 400;
-
-        return response()->json(new TreinadorResource($result['treiandor']), $status);
+        if ($result['status']) {
+            return response()->json(new TreinadorResource($result['treinador']));
+        }
+        return response()->json(['message' => $result['message']], 400);
     }
 
 
@@ -69,16 +72,19 @@ class TreinadorController extends Controller
 
         $result = $this->treinadorService->updateTreinador($data, $id);
 
-
-        return response()->json(new TreinadorResource($result['treiandor']),200);
+        if ($result['status']) {
+            return response()->json(new TreinadorResource($result['treinador']));
+        }
+        return response()->json(['message' => $result['message']], 400);
     }
 
     public function destroy($id): JsonResponse
     {
         $result = $this->treinadorService->deleteTreinador($id);
 
-        $status = $result['status' ? 200 : 400];
-
-        return response()->json(new TreinadorResource($result['treinador']),$status);
+        if ($result['status']) {
+            return response()->json(new TreinadorResource($result['treinador']));
+        }
+        return response()->json(['message' => $result['message']], 400);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Pokemon;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 class PokemonService
@@ -46,38 +47,51 @@ class PokemonService
 
     public function battlePokemon($id1, $id2)
     {
-        $pokemon1 = Pokemon::find($id1);
-        $pokemon2 = Pokemon::find($id2);
+
+        $pokemon1 = null;
+        $pokemon2 = null;
+        try {
+
+            $pokemon1 = Pokemon::findOrFail($id1);
+            $pokemon2 = Pokemon::findOrFail($id2);
 
 
-        do {
-            $pokemon1->vida_atual -= $pokemon2->ataque;
-            $pokemon2->vida_atual -= $pokemon1->ataque;
-        } while ($pokemon1->vida_atual > 0 && $pokemon2->vida_atual > 0);
+            do {
+                $pokemon1->vida_atual -= $pokemon2->ataque;
+                $pokemon2->vida_atual -= $pokemon1->ataque;
+            } while ($pokemon1->vida_atual > 0 && $pokemon2->vida_atual > 0);
 
 
-        $pokemon1->save();
-        $pokemon2->save();
+            $pokemon1->save();
+            $pokemon2->save();
 
 
-        if ($pokemon1->vida_atual > 0 && $pokemon2->vida_atual <= 0) {
-            $vencedor = $pokemon1;
-        } elseif ($pokemon2->vida_atual > 0 && $pokemon1->vida_atual <= 0) {
-            $vencedor = $pokemon2;
-        } else {
-            return [
-                "message" => "A batalha terminou em empate!",
-                "status" => false,
+            if ($pokemon1->vida_atual > 0 && $pokemon2->vida_atual <= 0) {
+                $vencedor = $pokemon1;
+            } elseif ($pokemon2->vida_atual > 0 && $pokemon1->vida_atual <= 0) {
+                $vencedor = $pokemon2;
+            } else {
+                return [
+                    "message" => "A batalha terminou em empate!",
+                    "status" => false,
+                ];
+            }
+
+            $message = 'O Pokémon vencedor é';
+
+            $response = [
+                "message" => $message,
+                "status" => true,
+                "pokemon" => $vencedor
+            ];
+        } catch (ModelNotFoundException | Exception $e) {
+            $response = [
+                'status' => false,
+                'produtos' => null,
+                'message' => 'Produto não encontrado',
             ];
         }
-
-        $message = 'O Pokémon vencedor é';
-
-        return [
-            "message" => $message,
-            "status" => true,
-            "pokemon" => $vencedor
-        ];
+        return $response;
     }
 
     public function storeHealing($id)
