@@ -23,31 +23,45 @@ class PokemonController extends Controller
 
     public function index(): JsonResponse
     {
-        $result = $this->pokemonService->getPokemon();
+        $result = $this->pokemonService->getPokemons();
 
-        $status = $result['status'] ? 200 : 400;
-
-        return response()->json(PokemonResource::collection($result['pokemons']), $status);
+        if ($result['status']) {
+            return $this->successResponse([
+                PokemonResource::collection($result['data'])
+            ]);
+        }
+        return $this->errorResponse($result['message']);
     }
 
     public function show($id): JsonResponse
     {
         $result = $this->pokemonService->getById($id);
 
-        $status = $result['status'] ? 200 : 400;
+        if ($result['status']) {
+            return $this->successResponse([
+                new PokemonResource($result['data'])
+            ]);
+        }
 
-        return response()->json(new PokemonResource($result['pokemon']), $status);
+        return $this->errorResponse($result['message']);
     }
 
     public function store(PokemonStoreFormRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $result = $this->pokemonService->storePokemon($data);
-        $status = $result['status'] ? 200 : 400;
+        $result = $this->pokemonService->createPokemon($data);
 
-        return response()->json(new PokemonResource($result['pokemon']), $status);
+        if ($result['status']) {
+            return $this->successResponse([
+                new PokemonResource($result['data'])
+            ]);
+        }
+
+        return $this->errorResponse($request['message']);
     }
+
+
 
     public function storeBattle(Request $request): JsonResponse
     {
@@ -55,11 +69,14 @@ class PokemonController extends Controller
         $id2 = $request->input('pokemon:id2');
 
         $result = $this->pokemonService->battlePokemon($id1, $id2);
-
         if ($result['status']) {
-            return response()->json(new PokemonBatalhaResource($result['pokemon'], $result['message']));
+            return $this->successResponse([
+                'win_message' => $result['win_message'],
+                'pokemon' => new PokemonBatalhaResource($result['data'])
+
+            ]);
         }
-        return response()->json(['message' => $result['message']], 400);
+        return $this->errorResponse($result['message']);
     }
 
     public function storeRoundBattle(Request $request): JsonResponse
@@ -67,11 +84,16 @@ class PokemonController extends Controller
         $id1 = $request->input('pokemon:id1');
         $id2 = $request->input('pokemon:id2');
 
-        $result = $this->pokemonService->storeRound($id1, $id2);
+        $result = $this->pokemonService->executeRound($id1, $id2);
 
-        $status = $result['status'] ? 200 : 400;
+        if ($result['status']) {
+            return $this->successResponse([
+                'battle_message' => $result['battle_message'],
+                'pokemons' => PokemonRoundBattleResource::collection($result['data']),
+            ], $result['message']);
+        }
 
-        return response()->json(new PokemonRoundBattleResource($result), $status);
+        return $this->errorResponse($result['message']);
     }
 
 
@@ -81,23 +103,40 @@ class PokemonController extends Controller
 
         $result = $this->pokemonService->updatePokemon($data, $id);
 
-        $status = $result['status'] ? 200 : 400;
+        if ($result['status']) {
 
-        return response()->json(new PokemonResource($result['pokemon']), $status);
+            return $this->successResponse([
+                new PokemonResource($result['data'])
+            ]);
+        }
+        return $this->errorResponse($result['message']);
     }
 
     public function storeLife(Request $request): JsonResponse
     {
         $id = $request->input('pokemon:id');
-        $result = $this->pokemonService->storeHealing($id);
-        return response()->json($result);
+
+        $result = $this->pokemonService->healPokemon($id);
+
+        if ($result['status']) {
+            return $this->successResponse([
+                'life_recover' => $result['life_recover'],
+                'pokemon' => new PokemonResource($result['data'])
+            ]);
+        }
+       return $this->errorResponse($result['message']);
     }
+
     public function destroy($id): JsonResponse
     {
         $result = $this->pokemonService->deletePokemon($id);
 
-        $status = $result['status' ? 200 : 400];
+        if ($result['status']) {
+            return $this->successResponse([
+                new PokemonResource($result['data'])
+            ]);
+        }
 
-        return response()->json(new PokemonResource($result), $status);
+        return $this->errorResponse($result['message']);
     }
 }
