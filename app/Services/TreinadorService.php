@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Pokemon;
 use App\Models\Treinador;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
@@ -18,12 +19,13 @@ class TreinadorService
 
             $response = [
                 'status' => true,
-                'treinador' => $treinadores,
+                'message' => 'Lista treinadores encontrados',
+                'data' => $treinadores
+
             ];
         } catch (Exception $e) {
             $response = [
                 'status' => false,
-                'treinador' => null,
                 'message' => 'Treinadores não encontrados',
             ];
         }
@@ -39,12 +41,12 @@ class TreinadorService
 
             $response = [
                 'status' => true,
-                'treinador' => $treinadores,
+                'message' => 'Treinadores e pokemons encontrados',
+                'data' => $treinadores,
             ];
         } catch (Exception $e) {
             $response = [
                 'status' => false,
-                'treinador' => null,
                 'message' => "Lista de treinadores e pokemons não encontrada"
             ];
         }
@@ -59,12 +61,12 @@ class TreinadorService
 
             $response = [
                 'status' => true,
-                'treinador' => $treinador,
+                'message' => 'Treinador encontrado',
+                'data' => $treinador,
             ];
-        } catch (Exception $e) {
+        } catch (ModelNotFoundException | Exception $e) {
             $response = [
                 'status' => false,
-                'treinador' => null,
                 'message' => 'Treinador não encontrado',
             ];
         }
@@ -79,10 +81,10 @@ class TreinadorService
             DB::commit();
             return [
                 'status' => true,
-                'treinador' => $treinador,
                 'message' => 'Treinador cadastrado',
+                'data' => $treinador,
             ];
-        } catch (Exception $e) {
+        } catch (ModelNotFoundException | Exception $e) {
             return [
                 'status' => false,
                 'message' => 'Treinador não cadastrado',
@@ -103,13 +105,13 @@ class TreinadorService
 
             $response = [
                 'status' => true,
-                'treinador' => $treinador,
-                'message' => 'atualizado',
+                'message' => 'Pokemon atualizado',
+                'data' => $treinador,
             ];
-        } catch (Exception $e) {
+        } catch (ModelNotFoundException | Exception $e) {
             $response = [
                 'status' => false,
-                'message' => 'n atualizado',
+                'message' => 'Pokemon não atualizado',
             ];
         }
 
@@ -126,10 +128,10 @@ class TreinadorService
 
             $response = [
                 'status' => true,
-                'treinador' => $treinador,
                 'message' => 'Treinador excluido',
+                'data' => $treinador,
             ];
-        } catch (Exception $e) {
+        } catch (ModelNotFoundException | Exception $e) {
             $response = [
                 'status' => false,
                 'message' => 'Treinador não excluido',
