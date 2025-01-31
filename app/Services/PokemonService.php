@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\DB;
 class PokemonService
 {
     /**
-     * Retorna a mesma entrada fornecida como saída.
+     * Retorna a mesma entrada fornecida como saída
      *
-     * @param int|bool $input Entrada numérica ou booleana.
-     * @return int|bool Retorna o mesmo valor de entrada.
+     * @param int|bool $input Entrada numérica ou booleana
+     * @return int|bool Retorna o mesmo valor de entrada
      */
     public function foo($input)
     {
@@ -21,10 +21,10 @@ class PokemonService
     }
 
     /**
-     * Obtém uma lista de pokémons ordenada por ID.
+     * Obtém uma lista de pokémons ordenada por ID
      *
      * @return array{status: bool, message: string, data: \Illuminate\Database\Eloquent\Collection|null}
-     * @throws Exception Se houver falha ao listar os pokémons.
+     * @throws Exception Se houver falha ao listar os pokémons
      */
     public function getPokemons()
     {
@@ -50,8 +50,8 @@ class PokemonService
      *
      * @param int $id ID do pokémon.
      * @return array{status: bool, message: string, data: \App\Models\Pokemon|null}
-     * @throws ModelNotFoundException Se o pokémon não for encontrado.
-     * @throws Exception Se houver falha ao buscar o pokémon.
+     * @throws ModelNotFoundException Se o pokémon não for encontrado
+     * @throws Exception Se houver falha ao buscar o pokémon
      */
     public function getById($id)
     {
@@ -77,7 +77,7 @@ class PokemonService
      *
      * @param array $data Dados do pokémon a ser criado
      * @return array{status: bool, message: string, data: \App\Models\Pokemon|null}
-     * @throws Exception Se houver falha ao criar o pokémon.
+     * @throws Exception Se houver falha ao criar o pokémon
      */
     public function createPokemon(array $data)
     {
@@ -106,8 +106,8 @@ class PokemonService
      * @param int $id1 ID do primeiro pokémon.
      * @param int $id2 ID do segundo pokémon.
      * @return array{status: bool, message: string, data: \App\Models\Pokemon|null}
-     * @throws ModelNotFoundException Se um dos pokémons não for encontrado.
-     * @throws Exception Se houver falha durante a batalha.
+     * @throws ModelNotFoundException Se um dos pokémons não for encontrado
+     * @throws Exception Se houver falha durante a batalha
      */
     public function battlePokemon($id1, $id2)
     {
@@ -154,10 +154,10 @@ class PokemonService
     /**
      * Cura um pokémon, restaurando sua vida atual para o valor máximo
      *
-     * @param int $id ID do pokémon.
+     * @param int $id ID do pokémon
      * @return array{status: bool, message: string, life_recover: int, data: \App\Models\Pokemon|null}
-     * @throws ModelNotFoundException Se o pokémon não for encontrado.
-     * @throws Exception Se houver falha ao curar o pokémon.
+     * @throws ModelNotFoundException Se o pokémon não for encontrado
+     * @throws Exception Se houver falha ao curar o pokémon
      */
     public function healPokemon($id)
     {

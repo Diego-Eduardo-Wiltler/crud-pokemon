@@ -11,10 +11,10 @@ class TreinadorService
 {
 
     /**
-     * Retorna a mesma entrada fornecida como saída.
+     * Retorna a mesma entrada fornecida como saída
      *
-     * @param int|bool $input Entrada numérica ou booleana.
-     * @return int|bool Retorna o mesmo valor de entrada.
+     * @param int|bool $input Entrada numérica ou booleana
+     * @return int|bool Retorna o mesmo valor de entrada
      */
     public function foo($input)
     {
@@ -50,7 +50,7 @@ class TreinadorService
      * Obtém uma lista de treinadores com seus respectivos pokémons
      *
      * @return array{status: bool, message: string, data: \Illuminate\Database\Eloquent\Collection}
-     * @throws \Illuminate\Database\Exception Se houver falha na busca.
+     * @throws \Illuminate\Database\Exception Se houver falha na busca
      */
     public function getTreinadoresPokemons(): array
     {
