@@ -9,6 +9,18 @@ use Illuminate\Support\Facades\DB;
 
 class TreinadorService
 {
+
+    /**
+     * Retorna a mesma entrada fornecida como saída.
+     *
+     * @param int|bool $input Entrada numérica ou booleana.
+     * @return int|bool Retorna o mesmo valor de entrada.
+     */
+    public function foo($input)
+    {
+        return $input;
+    }
+
     /**
      * Obtém uma lista de treinadores ordenada por ID
      *
