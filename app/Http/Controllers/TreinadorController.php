@@ -52,6 +52,28 @@ class TreinadorController extends Controller
         return $this->errorResponse($result['message']);
     }
 
+     /**
+     * GET /treinadores/{id}
+     *
+     * Retorna um unico treinador pelo id
+     *
+     * @urlParam id int required ID do treinador a ser encontrado. Example: 1
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: PokemonResource
+     * }
+     *
+     *  @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param $id ID do treinador a ser encontrado
+     *
+     */
+
     public function show($id): JsonResponse
     {
         $result = $this->treinadorService->getBYId($id);
@@ -164,7 +186,6 @@ class TreinadorController extends Controller
      * @param TreinadorUpdateFormRequest $request Requisição contendo os dados do treinador
      * @param int $id ID do treinador a ser atualizado
      * @return JsonResponse
-     *
      *
      */
 

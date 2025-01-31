@@ -57,6 +57,8 @@ class PokemonController extends Controller
      *
      * Retorna um unico pokemon pelo id
      *
+     * @urlParam id int required ID do pokemon a ser encontrado. Example: 1
+     *
      * @response 200 array{
      *   success: true,
      *   message: string,
@@ -67,6 +69,8 @@ class PokemonController extends Controller
      *   success: false,
      *   message: string
      * }
+     *
+     * @param $id ID do pokemon a ser encontrado
      *
      */
 
