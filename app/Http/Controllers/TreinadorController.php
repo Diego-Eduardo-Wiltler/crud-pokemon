@@ -21,6 +21,24 @@ class TreinadorController extends Controller
         $this->treinadorService = $treinadorService;
     }
 
+      /**
+     * GET /treinadores
+     *
+     * Retorna lista de treinadores cadastrados
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: array<TreinadorResource>
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     */
+
     public function index(): JsonResponse
     {
         $result = $this->treinadorService->getTreinador();
@@ -47,6 +65,23 @@ class TreinadorController extends Controller
         return $this->errorResponse($result['message']);
     }
 
+      /**
+     * GET /treinadores-pokemons
+     *
+     * Retorna lista de treinadores e seus pokemons cadastrados
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: array<TreinadorPokemonResource>
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     */
 
     public function indexTreinadorPokemon(): JsonResponse
     {
@@ -60,7 +95,34 @@ class TreinadorController extends Controller
         return $this->errorResponse($result['message']);
     }
 
-
+    /**
+     * POST /treinadores
+     *
+     * Cadastra um novo treinador
+     *
+     * @bodyParam nome string required Nome do treinador. Example: Karlos
+     * @bodyParam email string required Email do treinador. Example: Karlos@gmail.com
+     * @bodyParam regiao string required Região do treinaor. Example: Unova
+     * @bodyParam tipo_favorito string required Tipo favorito. Example: Planta
+     * @bodyParam idade int required Idade do treinador. Example: 18
+     * @bodyParam pokemon_id int Pokemon do treinador. Example: 4
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: TreinadorResource
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param TreinadorStoreFormRequest $request Requisição contendo os dados do treinador.
+     * @return JsonResponse
+     *
+     *
+     */
 
     public function store(TreinadorStoreFormRequest $request): JsonResponse
     {
@@ -76,6 +138,35 @@ class TreinadorController extends Controller
         return $this->errorResponse($result['message']);
     }
 
+    /**
+     * PUT /treinadores/{id}
+     *
+     * Cadastra um novo treinador
+     *
+     * @bodyParam nome string  Nome do treinador. Example: Karlos
+     * @bodyParam email string  Email do treinador. Example: Karlos@gmail.com
+     * @bodyParam regiao string  Região do treinaor. Example: Unova
+     * @bodyParam tipo_favorito string  Tipo favorito. Example: Planta
+     * @bodyParam idade int  Idade do treinador. Example: 18
+     * @bodyParam pokemon_id int Pokemon do treinador. Example: 4
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: TreinadorResource
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param TreinadorUpdateFormRequest $request Requisição contendo os dados do treinador
+     * @param int $id ID do treinador a ser atualizado
+     * @return JsonResponse
+     *
+     *
+     */
 
     public function update(TreinadorUpdateFormRequest $request, $id): JsonResponse
     {
@@ -90,6 +181,28 @@ class TreinadorController extends Controller
         }
         return $this->errorResponse($result['message']);
     }
+
+     /**
+     * DELETE /treinador/{id}
+     *
+     * Remove um treinador existente
+     *
+     * @urlParam id int required ID do treinador a ser removido. Example: 1
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: TreinadorResource
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param int $id ID do treinador a ser removido
+     * @return JsonResponse
+     */
 
     public function destroy($id): JsonResponse
     {

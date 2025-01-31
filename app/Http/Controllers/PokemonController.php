@@ -62,6 +62,7 @@ class PokemonController extends Controller
      *   message: string,
      *   data: PokemonResource
      * }
+     *
      *  @response 400 array{
      *   success: false,
      *   message: string
@@ -103,13 +104,14 @@ class PokemonController extends Controller
      *   data: PokemonResource
      * }
      *
-     * @param PokemonStoreFormRequest $request Requisição contendo os dados do pokemon.
-     * @return JsonResponse
-     *
      * @response 400 array{
      *   success: false,
      *   message: string
      * }
+     *
+     * @param PokemonStoreFormRequest $request Requisição contendo os dados do pokemon.
+     * @return JsonResponse
+     *
      *
      */
 
@@ -179,7 +181,12 @@ class PokemonController extends Controller
      * @response 200 array{
      *   success: true,
      *   message: string,
-     *   data: array<PokemonResource>
+     *   data: PokemonResource
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
      * }
      *
      * @param Request $request Requisição contendo os dados do pokemon
@@ -187,10 +194,6 @@ class PokemonController extends Controller
      * @param int $id2 ID do pokemon defensor
      * @return JsonResponse
      *
-     * @response 400 array{
-     *   success: false,
-     *   message: string
-     * }
      *
      */
 
