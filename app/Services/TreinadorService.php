@@ -2,138 +2,128 @@
 
 namespace App\Services;
 
-use App\Models\Pokemon;
 use App\Models\Treinador;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class TreinadorService
 {
     /**
-     * Retorna a saída da entrada fornecida
-     *
-     * @param int|bool $input Entrada como valor inteiro ou booleano
-     * @return int|bool Saída praticamente igual à entrada
-     */
-    public function foo($input)
-    {
-        return $input;
-    }
-
-    /**
      * Obtém uma lista de treinadores ordenada por ID
      *
-     * @return array Retorna um array com status, mensagem e a lista de treinadores
-     * @throws Exception Se houver falha ao recuperar os treinadores
+     * @return array{status: bool, message: string, data: \Illuminate\Database\Eloquent\Collection}
+     * @throws \Illuminate\Database\Exception Se houver falha ao recuperar os treinadores
      */
-    public function getTreinador()
+    public function getTreinador(): array
     {
         try {
             $treinadores = Treinador::orderBy('id', 'ASC')->get();
 
-            return [
+            $response = [
                 'status' => true,
                 'message' => 'Lista de treinadores encontrados',
                 'data' => $treinadores,
             ];
-        } catch (Exception $e) {
-            return [
+        } catch (ModelNotFoundException | Exception $e) {
+            $response = [
                 'status' => false,
-                'message' => 'Treinadores não encontrados',
+                'message' => 'Lista de treinadores não encontrada',
             ];
         }
+        return $response;
     }
 
     /**
-     * Obtém uma lista de treinadores com seus respectivos pokémons.
+     * Obtém uma lista de treinadores com seus respectivos pokémons
      *
-     * @return array Retorna um array com status, mensagem e a lista de treinadores e seus pokémons.
-     * @throws Exception Se houver falha na busca.
+     * @return array{status: bool, message: string, data: \Illuminate\Database\Eloquent\Collection}
+     * @throws \Illuminate\Database\Exception Se houver falha na busca.
      */
-    public function getTreinadoresPokemons()
+    public function getTreinadoresPokemons(): array
     {
         try {
             $treinadores = Treinador::with('pokemon')->get();
 
-            return [
+            $response = [
                 'status' => true,
                 'message' => 'Treinadores e pokémons encontrados',
                 'data' => $treinadores,
             ];
-        } catch (Exception $e) {
-            return [
+        } catch (ModelNotFoundException | Exception $e) {
+            $response = [
                 'status' => false,
-                'message' => 'Lista de treinadores e pokémons não encontrada',
+                'message' => 'Lista de treinadores e seus pokemons não encontrados',
             ];
         }
+        return $response;
     }
 
-      /**
+    /**
      * Busca um treinador pelo ID
      *
      * @param int $id ID do treinador
-     * @return array Retorna um array com status, mensagem e os dados do treinador
+     * @return array{status: bool, message: string, data: \App\Models\Treinador|null}
      * @throws ModelNotFoundException Se o treinador não for encontrado
-     * @throws Exception Se houver um erro na busca
+     * @throws \Illuminate\Database\Exception Se houver um erro na busca
      */
-    public function getById($id)
+    public function getById(int $id): array
     {
         try {
             $treinador = Treinador::findOrFail($id);
 
-            return [
+            $response = [
                 'status' => true,
                 'message' => 'Treinador encontrado',
                 'data' => $treinador,
             ];
         } catch (ModelNotFoundException | Exception $e) {
-            return [
+            $response = [
                 'status' => false,
                 'message' => 'Treinador não encontrado',
             ];
         }
+        return $response;
     }
 
-   /**
+    /**
      * Cadastra um novo treinador no banco de dados
      *
      * @param array $data Dados do treinador a ser cadastrado
-     * @return array Retorna um array com status, mensagem e os dados do treinador cadastrado
-     * @throws Exception Se houver falha na inserção
+     * @return array{status: bool, message: string, data: \App\Models\Treinador|null}
+     * @throws \Illuminate\Database\Exception Se houver falha na inserção
      */
-    public function storeTreinador(array $data)
+    public function storeTreinador(array $data): array
     {
         DB::beginTransaction();
         try {
             $treinador = Treinador::create($data);
             DB::commit();
 
-            return [
+            $response = [
                 'status' => true,
                 'message' => 'Treinador cadastrado',
                 'data' => $treinador,
             ];
-        } catch (Exception $e) {
-            DB::rollBack();
-            return [
+        } catch (ModelNotFoundException | Exception $e) {
+            $response = [
                 'status' => false,
                 'message' => 'Treinador não cadastrado',
             ];
         }
+        return $response;
     }
 
-     /**
+    /**
      * Atualiza os dados de um treinador existente
      *
      * @param array $data Dados atualizados do treinador
      * @param int $id ID do treinador a ser atualizado
-     * @return array Retorna um array com status, mensagem e os dados do treinador atualizado
+     * @return array{status: bool, message: string, data: \App\Models\Treinador|null}
      * @throws ModelNotFoundException Se o treinador não for encontrado
-     * @throws Exception Se houver falha na atualização
+     * @throws \Illuminate\Database\Exception Se houver falha na atualização
      */
-    public function updateTreinador(array $data, $id)
+    public function updateTreinador(array $data, int $id): array
     {
         DB::beginTransaction();
         try {
@@ -141,44 +131,45 @@ class TreinadorService
             $treinador->update($data);
             DB::commit();
 
-            return [
+            $response = [
                 'status' => true,
                 'message' => 'Treinador atualizado',
                 'data' => $treinador,
             ];
         } catch (ModelNotFoundException | Exception $e) {
-            DB::rollBack();
-            return [
+            $response = [
                 'status' => false,
                 'message' => 'Treinador não atualizado',
             ];
         }
+        return $response;
     }
 
-      /**
+    /**
      * Remove um treinador do banco de dados
      *
      * @param int $id ID do treinador a ser removido
-     * @return array Retorna um array com status e mensagem de sucesso ou falha
+     * @return array{status: bool, message: string, data: \App\Models\Treinador|null}
      * @throws ModelNotFoundException Se o treinador não for encontrado
-     * @throws Exception Se houver falha na remoção
+     * @throws \Illuminate\Database\Exception Se houver falha na remoção
      */
-    public function deleteTreinador($id)
+    public function deleteTreinador(int $id)
     {
         try {
             $treinador = Treinador::findOrFail($id);
             $treinador->delete();
 
-            return [
+            $response = [
                 'status' => true,
                 'message' => 'Treinador excluído',
                 'data' => $treinador,
             ];
         } catch (ModelNotFoundException | Exception $e) {
-            return [
+            $response = [
                 'status' => false,
                 'message' => 'Treinador não excluído',
             ];
         }
+        return $response;
     }
 }
