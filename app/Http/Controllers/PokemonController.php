@@ -73,7 +73,6 @@ class PokemonController extends Controller
      * @param $id ID do pokemon a ser encontrado
      *
      */
-
     public function show($id): JsonResponse
     {
         $result = $this->pokemonService->getById($id);
