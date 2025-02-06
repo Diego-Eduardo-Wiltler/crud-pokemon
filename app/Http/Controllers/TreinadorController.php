@@ -21,7 +21,7 @@ class TreinadorController extends Controller
         $this->treinadorService = $treinadorService;
     }
 
-      /**
+    /**
      * GET /treinadores
      *
      * Retorna lista de treinadores cadastrados
@@ -43,16 +43,12 @@ class TreinadorController extends Controller
     {
         $result = $this->treinadorService->getTreinador();
 
-
-        if ($result['status']) {
-            return $this->successResponse([
-                 TreinadorResource::collection($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            TreinadorResource::collection($result['data'])
+        ]);
     }
 
-     /**
+    /**
      * GET /treinadores/{id}
      *
      * Retorna um unico treinador pelo id
@@ -78,16 +74,12 @@ class TreinadorController extends Controller
     {
         $result = $this->treinadorService->getBYId($id);
 
-
-        if ($result['status']) {
-            return $this->successResponse([
-                new TreinadorResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new TreinadorResource($result['data'])
+        ]);
     }
 
-      /**
+    /**
      * GET /treinadores-pokemons
      *
      * Retorna lista de treinadores e seus pokemons cadastrados
@@ -109,12 +101,9 @@ class TreinadorController extends Controller
     {
         $result = $this->treinadorService->getTreinadoresPokemons();
 
-        if ($result['status']) {
-            return $this->successResponse([
-                TreinadorPokemonResource::collection($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            TreinadorPokemonResource::collection($result['data'])
+        ]);
     }
 
     /**
@@ -149,15 +138,11 @@ class TreinadorController extends Controller
     public function store(TreinadorStoreFormRequest $request): JsonResponse
     {
         $data = $request->validated();
-
         $result = $this->treinadorService->storeTreinador($data);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new TreinadorResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new TreinadorResource($result['data'])
+        ]);
     }
 
     /**
@@ -192,18 +177,14 @@ class TreinadorController extends Controller
     public function update(TreinadorUpdateFormRequest $request, $id): JsonResponse
     {
         $data = $request->validated();
-
         $result = $this->treinadorService->updateTreinador($data, $id);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new TreinadorResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new TreinadorResource($result['data'])
+        ]);
     }
 
-     /**
+    /**
      * DELETE /treinador/{id}
      *
      * Remove um treinador existente
@@ -229,11 +210,8 @@ class TreinadorController extends Controller
     {
         $result = $this->treinadorService->deleteTreinador($id);
 
-        if ($result['status']) {
-            return $this->successResponse([
-                new TreinadorResource($result['data'])
-            ]);
-        }
-        return $this->errorResponse($result['message']);
+        return $this->successResponse([
+            new TreinadorResource($result['data'])
+        ]);
     }
 }
