@@ -15,12 +15,4 @@ abstract class Controller
             'data' => $data,
         ], $code);
     }
-
-    protected function errorResponse(string $message = 'Ocorreu um erro.', int $code = 400): JsonResponse
-    {
-        return response()->json([
-            'success' => false,
-            'message' => $message,
-        ], $code);
-    }
 }
