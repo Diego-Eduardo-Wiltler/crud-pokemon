@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Models\Pokemon;
-use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 class PokemonService
@@ -211,7 +209,6 @@ class PokemonService
      *
      * @param int $id ID do pokémon a ser excluído
      * @return array{message: string, data: \App\Models\Pokemon|null}
-     * @throws Exception Se houver falha ao excluir o pokémon
      */
     public function deletePokemon($id)
     {
