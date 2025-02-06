@@ -27,7 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response()->json([
                     'message' => 'Id not found',
                     'errors' => $exception->getMessage(),
-                    'body' => 30,
+                    'errorResponse' => 30,
                 ], 200);
             }
 
