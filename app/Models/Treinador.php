@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Treinador extends Model
 {
+    use HasFactory;
+
     protected $table = 'treinadores';
 
     protected $fillable = [
@@ -14,7 +17,8 @@ class Treinador extends Model
         "email",
         "regiao",
         "tipo_favorito",
-        "idade"
+        "idade",
+        "pokemon_id"
 
 
     ];
