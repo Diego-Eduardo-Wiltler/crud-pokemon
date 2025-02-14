@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\PokemonTypeEnum;
+use App\Enums\RegionEnum;
 use App\Models\Treinador;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,8 +21,8 @@ class TreinadorFactory extends Factory
             'nome' => $this->faker->name(),
             'pokemon_id' => $this->faker->numberBetween(1, 151),
             'email' => $this->faker->unique()->safeEmail(),
-            'regiao' => $this->faker->randomElement(['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Alola', 'Galar']),
-            'tipo_favorito' => $this->faker->randomElement(['Fogo', 'Água', 'Grama', 'Elétrico', 'Fantasma', 'Psíquico', 'Dragão']),
+            'regiao' => $this->faker->randomElement(RegionEnum::cases())->value,
+            'tipo_favorito' => $this->faker->randomElement(PokemonTypeEnum::cases())->value,
             'idade' => $this->faker->numberBetween(10, 50),
         ];
     }
