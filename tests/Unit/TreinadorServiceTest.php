@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 class TreinadorServiceTest extends TestCase
 {
-    use RefreshDatabase;  // Garante banco limpo para o teste
+    use RefreshDatabase;
 
     // php artisan test --filter=TreinadorServiceTest::test_get_treinadores
     public function test_get_treinadores()
@@ -32,7 +32,5 @@ class TreinadorServiceTest extends TestCase
         $this->assertCount(5, $listarTreinadores);
         $this->assertInstanceOf(Collection::class, $listarTreinadores);
         $this->assertEquals($treinadores->toArray(), $listarTreinadores->toArray());
-        $this->assertEquals($treinadores->first()->pokemon_id, $listarTreinadores->first()->pokemon_id);
-
     }
 }
