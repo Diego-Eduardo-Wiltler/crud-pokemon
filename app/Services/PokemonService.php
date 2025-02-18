@@ -26,12 +26,11 @@ class PokemonService
     public function getPokemons()
     {
         $pokemons = Pokemon::orderBy('id', 'Asc')->get();
-        $response = [
+
+        return [
             'message' => 'Listando pokémons',
             'data' => $pokemons,
         ];
-
-        return $response;
     }
 
     /**
@@ -43,12 +42,11 @@ class PokemonService
     public function getById($id)
     {
         $pokemon = Pokemon::findOrFail($id);
-        $response = [
+
+        return [
             'message' => 'Pokémon encontrado',
             'data' => $pokemon,
         ];
-
-        return $response;
     }
 
     /**
@@ -60,14 +58,15 @@ class PokemonService
     public function createPokemon(array $data)
     {
         DB::beginTransaction();
+
         $pokemon = Pokemon::create($data);
+
         DB::commit();
-        $response = [
+
+       return [
             'message' => 'Pokémon cadastrado',
             'data' => $pokemon,
         ];
-
-        return $response;
     }
 
     /**
@@ -81,6 +80,7 @@ class PokemonService
     {
         $pokemon1 = Pokemon::findOrFail($id1);
         $pokemon2 = Pokemon::findOrFail($id2);
+
         do {
             $pokemon1->vida_atual -= $pokemon2->ataque;
             $pokemon2->vida_atual -= $pokemon1->ataque;
@@ -98,12 +98,10 @@ class PokemonService
                 "message" => "A batalha terminou em empate!",
             ];
         }
-        $response = [
+        return [
             "win_message" => 'O pokémon vencedor é',
             "data" => $vencedor
         ];
-
-        return $response;
     }
 
     /**
@@ -115,16 +113,17 @@ class PokemonService
     public function healPokemon($id)
     {
         $pokemon = Pokemon::findOrFail($id);
+
         $vidaRecuperada = $pokemon->vida - $pokemon->vida_atual;
+
         $pokemon->vida_atual = $pokemon->vida;
         $pokemon->save();
-        $response = [
+
+        return [
             'message' => 'Pokémon curado',
             'life_recover' => $vidaRecuperada,
             'data' => $pokemon,
         ];
-
-        return $response;
     }
 
     /**
@@ -169,18 +168,17 @@ class PokemonService
             $deffender->nome . ' ainda se mantém na luta ',
             $deffender->nome . ' ainda possui ' . $deffender->vida_atual . ' pontos de vida',
         ];
+
         $pokemons = [
             $attacker,
             $deffender,
         ];
 
-        $response = [
+        return [
             'message' => 'Batalha iniciada',
             'battle_message' => $battle_message,
             'data' => $pokemons,
         ];
-
-        return $response;
     }
 
     /**
@@ -193,15 +191,16 @@ class PokemonService
     public function updatePokemon(array $data, $id)
     {
         DB::beginTransaction();
+
         $pokemon = Pokemon::findOrFail($id);
         $pokemon->update($data);
+
         DB::commit();
-        $response = [
+
+        return [
             'message' => 'Pokémon atualizado',
             'data' => $pokemon,
         ];
-
-        return $response;
     }
 
     /**
@@ -214,11 +213,10 @@ class PokemonService
     {
         $pokemon = Pokemon::findOrFail($id);
         $pokemon->delete();
-        $response = [
+
+        return [
             'message' => 'Pokémon excluído',
             'data' => $pokemon,
         ];
-
-        return $response;
     }
 }

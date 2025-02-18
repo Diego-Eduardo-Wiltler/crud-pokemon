@@ -29,12 +29,12 @@ class TreinadorService
     public function getTreinador(): array
     {
         $treinadores = Treinador::orderBy('id', 'ASC')->get();
-        $response = [
+
+        return [
             'message' => 'Lista de treinadores encontrados',
             'data' => $treinadores,
         ];
 
-        return $response;
     }
 
     /**
@@ -45,12 +45,11 @@ class TreinadorService
     public function getTreinadoresPokemons(): array
     {
         $treinadores = Treinador::with('pokemon')->get();
-        $response = [
+
+        return [
             'message' => 'Treinadores e pokémons encontrados',
             'data' => $treinadores,
         ];
-
-        return $response;
     }
 
     /**
@@ -62,11 +61,11 @@ class TreinadorService
     public function getById(int $id): array
     {
         $treinador = Treinador::findOrFail($id);
-        $response = [
+
+        return [
             'message' => 'Treinador encontrado',
             'data' => $treinador,
         ];
-        return $response;
     }
 
     /**
@@ -78,14 +77,17 @@ class TreinadorService
     public function storeTreinador(array $data): array
     {
         DB::beginTransaction();
+
         $treinador = Treinador::create($data);
+
         DB::commit();
-        $response = [
+
+        return [
             'message' => 'Treinador cadastrado',
             'data' => $treinador,
         ];
 
-        return $response;
+
     }
 
     /**
@@ -98,15 +100,16 @@ class TreinadorService
     public function updateTreinador(array $data, int $id): array
     {
         DB::beginTransaction();
+
         $treinador = Treinador::findOrFail($id);
         $treinador->update($data);
+
         DB::commit();
-        $response = [
+
+        return  [
             'message' => 'Treinador atualizado',
             'data' => $treinador,
         ];
-
-        return $response;
     }
 
     /**
@@ -119,11 +122,10 @@ class TreinadorService
     {
         $treinador = Treinador::findOrFail($id);
         $treinador->delete();
-        $response = [
+
+        return [
             'message' => 'Treinador excluído',
             'data' => $treinador,
         ];
-
-        return $response;
     }
 }
