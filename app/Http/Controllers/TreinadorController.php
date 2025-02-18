@@ -177,7 +177,7 @@ class TreinadorController extends Controller
     public function update(TreinadorUpdateFormRequest $request, $id): JsonResponse
     {
         $data = $request->validated();
-        $result = $this->treinadorService->updateTreinador($data, $id);
+        $result = $this->treinadorService->updateTreinador($id, $data);
 
         return $this->successResponse([
             new TreinadorResource($result['data'])
