@@ -2,10 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Models\Pokemon;
 use App\Models\Treinador;
 use App\Services\TreinadorService;
-use Database\Seeders\TreinadorSeeder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
