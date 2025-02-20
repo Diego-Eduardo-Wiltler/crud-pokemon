@@ -8,17 +8,6 @@ use Illuminate\Support\Facades\DB;
 class PokemonService
 {
     /**
-     * Retorna a mesma entrada fornecida como saída
-     *
-     * @param int|bool $input Entrada numérica ou booleana
-     * @return int|bool Retorna o mesmo valor de entrada
-     */
-    public function foo($input)
-    {
-        return $input;
-    }
-
-    /**
      * Obtém uma lista de pokémons ordenada por ID
      *
      * @return array{message: string, data: \Illuminate\Database\Eloquent\Collection|null}
@@ -93,10 +82,6 @@ class PokemonService
             $vencedor = $pokemon1;
         } elseif ($pokemon2->vida_atual > 0 && $pokemon1->vida_atual <= 0) {
             $vencedor = $pokemon2;
-        } else {
-            return [
-                "message" => "A batalha terminou em empate!",
-            ];
         }
         return [
             "win_message" => 'O pokémon vencedor é',
@@ -178,6 +163,8 @@ class PokemonService
             'message' => 'Batalha iniciada',
             'battle_message' => $battle_message,
             'data' => $pokemons,
+            'damage_dealt' => $damageDealt,
+            'defesa_texto' => $defesaTexto,
         ];
     }
 
@@ -188,7 +175,7 @@ class PokemonService
      * @param int $id ID do pokémon a ser atualizado
      * @return array{message: string, data: \App\Models\Pokemon|null}
      */
-    public function updatePokemon(array $data, $id)
+    public function updatePokemon($id, array $data)
     {
         DB::beginTransaction();
 

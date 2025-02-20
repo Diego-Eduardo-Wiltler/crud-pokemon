@@ -234,7 +234,7 @@ class PokemonController extends Controller
     public function update(PokemonUpdateFormRequest $request, $id): JsonResponse
     {
         $data = $request->validated();
-        $result = $this->pokemonService->updatePokemon($data, $id);
+        $result = $this->pokemonService->updatePokemon($id, $data);
 
         return $this->successResponse([
             new PokemonResource($result['data'])
