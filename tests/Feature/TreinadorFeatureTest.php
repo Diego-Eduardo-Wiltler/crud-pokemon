@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tests\Traits\SetUpDatabaseTrait;
 
+// php artisan test --filter=TreinadorFeatureTest
 class TreinadorFeatureTest extends TestCase
 {
     use RefreshDatabase, SetUpDatabaseTrait;
@@ -82,8 +83,8 @@ class TreinadorFeatureTest extends TestCase
         ]);
     }
 
-    // php artisan test --filter=TreinadorFeatureTest::test_create_treinador_endpoint
-    public function test_create_treinador_endpoint()
+    // php artisan test --filter=TreinadorFeatureTest::test_create_treinador
+    public function test_create_treinador()
     {
         $data = [
             'nome' => 'Treinador Teste',
@@ -111,8 +112,8 @@ class TreinadorFeatureTest extends TestCase
         ]);
     }
 
-    // php artisan test --filter=TreinadorFeatureTest::test_update_treinador_endpoint
-    public function test_update_treinador_endpoint()
+    // php artisan test --filter=TreinadorFeatureTest::test_update_treinador
+    public function test_update_treinador()
     {
         $treinador = $this->treinadores->first();
 
@@ -141,8 +142,8 @@ class TreinadorFeatureTest extends TestCase
         $this->assertEquals($dadosAtualizados['pokemon_id'], $responseData['pokemon_id']);
     }
 
-    // php artisan test --filter=TreinadorFeatureTest::teste_delete_treinador_endepoint
-    public function teste_delete_treinador_endepoint()
+    // php artisan test --filter=TreinadorFeatureTest::teste_delete_treinador
+    public function teste_delete_treinador()
     {
         $treinador = $this->treinadores->first();
 
