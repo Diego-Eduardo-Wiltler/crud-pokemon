@@ -13,17 +13,19 @@ class TreinadorServiceTest extends TestCase
 {
     use RefreshDatabase, SetUpDatabaseTrait;
 
+    protected $treinadorService;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->setUpDatabase();
+        $this->treinadorService = new TreinadorService();
     }
 
     // php artisan test --filter=TreinadorServiceTest::test_get_treinadores
     public function test_get_treinadores()
     {
-        $service = new TreinadorService();
-        $response = $service->getTreinador();
+        $response = $this->treinadorService->getTreinador();
         $listarTreinadores = $response['data'];
 
         $this->assertCount(5, $listarTreinadores);
@@ -36,8 +38,7 @@ class TreinadorServiceTest extends TestCase
     {
         $id = $this->treinadores->random()->id;
 
-        $service = new TreinadorService();
-        $response = $service->getById($id);
+        $response = $this->treinadorService->getById($id);
 
         $this->assertArrayHasKey('data', $response);
         $this->assertInstanceOf(Treinador::class, $response['data']);
@@ -49,8 +50,7 @@ class TreinadorServiceTest extends TestCase
     {
         $this->treinadores->load('pokemon');
 
-        $service = new TreinadorService();
-        $response = $service->getTreinadoresPokemons();
+        $response = $this->treinadorService->getTreinadoresPokemons();
 
         $listarTreinadores = $response['data'];
 
@@ -72,8 +72,7 @@ class TreinadorServiceTest extends TestCase
             'pokemon_id' => $this->pokemons->random()->id,
         ];
 
-        $service = new TreinadorService();
-        $response = $service->storeTreinador($data);
+        $response = $this->treinadorService->storeTreinador($data);
 
         $treinadorCriado = $response['data'];
 
@@ -103,8 +102,7 @@ class TreinadorServiceTest extends TestCase
             'pokemon_id' => $this->pokemons->random()->id,
         ];
 
-        $service = new TreinadorService();
-        $response = $service->updateTreinador($treinador->id, $dadosAtualizados);
+        $response = $this->treinadorService->updateTreinador($treinador->id, $dadosAtualizados);
 
         $treinadorAtualizado = $response['data'];
 
@@ -124,8 +122,7 @@ class TreinadorServiceTest extends TestCase
     {
         $treinador = $this->treinadores->first();
 
-        $service = new TreinadorService();
-        $service->deleteTreinador($treinador->id);
+        $this->treinadorService->deleteTreinador($treinador->id);
 
         $this->assertDatabaseMissing('treinadores', [
             'id' => $treinador->id,

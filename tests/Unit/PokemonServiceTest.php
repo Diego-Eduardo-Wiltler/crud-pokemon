@@ -14,17 +14,19 @@ class PokemonServiceTest extends TestCase
 {
     use RefreshDatabase, SetUpDatabaseTrait;
 
+    protected $pokemonService;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->setUpDatabase();
+        $this->pokemonService = new PokemonService();
     }
 
     // php artisan test --filter=PokemonServiceTest::test_get_pokemons
     public function test_get_pokemons()
     {
-        $service = new PokemonService();
-        $response = $service->getPokemons();
+        $response = $this->pokemonService->getPokemons();
         $listarPokemons = $response['data'];
 
         $this->assertCount(5, $listarPokemons);
@@ -37,8 +39,7 @@ class PokemonServiceTest extends TestCase
     {
         $id = $this->pokemons->random()->id;
 
-        $service = new PokemonService();
-        $response = $service->getById($id);
+        $response = $this->pokemonService->getById($id);
 
         $this->assertArrayHasKey('data', $response);
         $this->assertInstanceOf(Pokemon::class, $response['data']);
@@ -60,8 +61,7 @@ class PokemonServiceTest extends TestCase
             'shiny' => 0,
         ];
 
-        $service = new PokemonService;
-        $response = $service->createPokemon($data);
+        $response = $this->pokemonService->createPokemon($data);
 
         $pokemonCriado = $response['data'];
 
@@ -86,8 +86,7 @@ class PokemonServiceTest extends TestCase
         $pokemon1 = $this->pokemons->first();
         $pokemon2 = $this->pokemons->get(1);
 
-        $service = New PokemonService;
-        $response = $service->battlePokemon($pokemon1->id, $pokemon2->id);
+        $response = $this->pokemonService->battlePokemon($pokemon1->id, $pokemon2->id);
 
         $pokemon1->refresh();
         $pokemon2->refresh();
@@ -104,8 +103,7 @@ class PokemonServiceTest extends TestCase
         $pokemon1 = $this->pokemons->first();
         $pokemon2 = $this->pokemons->get(1);
 
-        $service = New PokemonService;
-        $response = $service->executeRound($pokemon1->id , $pokemon2->id);
+        $response = $this->pokemonService->executeRound($pokemon1->id , $pokemon2->id);
 
         $pokemon2->refresh();
 
@@ -127,8 +125,7 @@ class PokemonServiceTest extends TestCase
 
         $pokemon->save();
 
-        $service = New PokemonService();
-        $response = $service->healPokemon($pokemon->id);
+        $response = $this->pokemonService->healPokemon($pokemon->id);
 
         $pokemon->refresh();
 
@@ -153,8 +150,7 @@ class PokemonServiceTest extends TestCase
             'shiny' => 0,
         ];
 
-        $service = New PokemonService;
-        $response = $service->updatePokemon($pokemon->id, $dadosAtualizados);
+        $response = $this->pokemonService->updatePokemon($pokemon->id, $dadosAtualizados);
 
         $pokemonAtualizado = $response['data'];
 
@@ -176,10 +172,7 @@ class PokemonServiceTest extends TestCase
     {
         $pokemon = $this->pokemons->first();
 
-        $service = New PokemonService;
-        $response = $service->deletePokemon($pokemon->id);
-
-        $teste = $response;
+        $this->pokemonService->deletePokemon($pokemon->id);
 
         $this->assertDatabaseMissing('pokemons', [
             'id' => $pokemon->id,
