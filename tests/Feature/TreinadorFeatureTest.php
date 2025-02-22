@@ -21,6 +21,18 @@ class TreinadorFeatureTest extends TestCase
         $this->setUpDatabase();
     }
 
+    protected function getTreinadorData(): array
+    {
+        return [
+            'nome' => 'Treinador Teste',
+            'email' => 'treinador@example.com',
+            'regiao' => 'Unova',
+            'tipo_favorito' => 'Planta',
+            'idade' => 18,
+            'pokemon_id' => $this->pokemons->random()->id,
+        ];
+    }
+
     // php artisan test --filter=TreinadorFeatureTest::test_get_treinadores
     public function test_get_treinadores()
     {
@@ -86,14 +98,7 @@ class TreinadorFeatureTest extends TestCase
     // php artisan test --filter=TreinadorFeatureTest::test_create_treinador
     public function test_create_treinador()
     {
-        $data = [
-            'nome' => 'Treinador Teste',
-            'email' => 'treinador@example.com',
-            'regiao' => 'Unova',
-            'tipo_favorito' => 'Planta',
-            'idade' => 18,
-            'pokemon_id' => $this->pokemons->random()->id,
-        ];
+        $data = $this->getTreinadorData();
 
         $response = $this->postJson('/api/treinadores', $data);
         $responseData = $response->json('data.0');
@@ -117,14 +122,7 @@ class TreinadorFeatureTest extends TestCase
     {
         $treinador = $this->treinadores->first();
 
-        $dadosAtualizados = [
-            'nome' => 'Treinador Teste',
-            'email' => 'treinador@example.com',
-            'regiao' => 'Unova',
-            'tipo_favorito' => 'Planta',
-            'idade' => 18,
-            'pokemon_id' => $this->pokemons->random()->id,
-        ];
+        $dadosAtualizados = $this->getTreinadorData();
 
         $response = $this->putJson("/api/treinadores/{$treinador->id}", $dadosAtualizados);
 

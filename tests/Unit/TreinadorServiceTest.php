@@ -19,7 +19,20 @@ class TreinadorServiceTest extends TestCase
     {
         parent::setUp();
         $this->setUpDatabase();
+
         $this->treinadorService = new TreinadorService();
+    }
+
+    protected function getTreinadorData(): array
+    {
+        return [
+            'nome' => 'Treinador Teste',
+            'email' => 'treinador@example.com',
+            'regiao' => 'Unova',
+            'tipo_favorito' => 'Planta',
+            'idade' => 18,
+            'pokemon_id' => $this->pokemons->random()->id,
+        ];
     }
 
     // php artisan test --filter=TreinadorServiceTest::test_get_treinadores
@@ -60,17 +73,10 @@ class TreinadorServiceTest extends TestCase
         $this->assertEquals($this->treinadores->toArray(), $listarTreinadores->toArray());
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_store_treinador
-    public function test_store_treinador()
+    // php artisan test --filter=TreinadorServiceTest::test_create_treinador
+    public function test_create_treinador()
     {
-        $data = [
-            'nome' => 'Treinador Teste',
-            'email' => 'treinador@example.com',
-            'regiao' => 'Unova',
-            'tipo_favorito' => 'Planta',
-            'idade' => 18,
-            'pokemon_id' => $this->pokemons->random()->id,
-        ];
+        $data = $this->getTreinadorData();
 
         $response = $this->treinadorService->storeTreinador($data);
 
@@ -93,14 +99,7 @@ class TreinadorServiceTest extends TestCase
     {
         $treinador = $this->treinadores->first();
 
-        $dadosAtualizados = [
-            'nome' => 'Treinador Atualizado',
-            'email' => 'atualizado@example.com',
-            'regiao' => 'Johto',
-            'tipo_favorito' => 'Água',
-            'idade' => 30,
-            'pokemon_id' => $this->pokemons->random()->id,
-        ];
+        $dadosAtualizados = $this->getTreinadorData();
 
         $response = $this->treinadorService->updateTreinador($treinador->id, $dadosAtualizados);
 

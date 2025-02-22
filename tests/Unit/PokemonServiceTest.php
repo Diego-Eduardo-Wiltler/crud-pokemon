@@ -23,6 +23,21 @@ class PokemonServiceTest extends TestCase
         $this->pokemonService = new PokemonService();
     }
 
+    protected function getPokemonData(): array
+    {
+        return [
+            'nome' => 'Caterpie',
+            'ataque' => 5,
+            'defesa' => 5,
+            'vida' => 45,
+            'vida_atual' => 50,
+            'tipo' => 'Inseto',
+            'peso' => '2.9Kg',
+            'localizacao' => 'Floresta Selvagem - Grama Alta',
+            'shiny' => 0,
+        ];
+    }
+
     // php artisan test --filter=PokemonServiceTest::test_get_pokemons
     public function test_get_pokemons()
     {
@@ -49,17 +64,7 @@ class PokemonServiceTest extends TestCase
     // php artisan test --filter=PokemonServiceTest::test_create_pokemon
     public function test_create_pokemon()
     {
-        $data = [
-            'nome' => 'Caterpie',
-            'ataque' => 5,
-            'defesa' => 5,
-            'vida' => 45,
-            'vida_atual' => 50,
-            'tipo' => 'Inseto',
-            'peso' => '2.9Kg',
-            'localizacao' => 'Floresta Selvagem - Grama Alta',
-            'shiny' => 0,
-        ];
+        $data = $this->getPokemonData();
 
         $response = $this->pokemonService->createPokemon($data);
 
@@ -138,17 +143,8 @@ class PokemonServiceTest extends TestCase
     public function test_update_pokemon()
     {
         $pokemon = $this->pokemons->first();
-        $dadosAtualizados = [
-            'nome' => 'Caterpie',
-            'ataque' => 5,
-            'defesa' => 5,
-            'vida' => 45,
-            'vida_atual' => 50,
-            'tipo' => 'Inseto',
-            'peso' => '2.9Kg',
-            'localizacao' => 'Floresta Selvagem - Grama Alta',
-            'shiny' => 0,
-        ];
+
+        $dadosAtualizados = $this->getPokemonData();
 
         $response = $this->pokemonService->updatePokemon($pokemon->id, $dadosAtualizados);
 

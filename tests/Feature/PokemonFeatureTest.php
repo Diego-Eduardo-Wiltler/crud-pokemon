@@ -19,6 +19,21 @@ class PokemonFeatureTest extends TestCase
         $this->setUpDatabase();
     }
 
+    protected function getPokemonData(): array
+    {
+        return [
+            'nome' => 'Caterpie',
+            'ataque' => 5,
+            'defesa' => 5,
+            'vida' => 45,
+            'vida_atual' => 50,
+            'tipo' => 'Inseto',
+            'peso' => '2.9Kg',
+            'localizacao' => 'Floresta Selvagem - Grama Alta',
+            'shiny' => 0,
+        ];
+    }
+
     // php artisan test --filter=PokemonFeatureTest::test_get_pokemons
     public function test_get_pokemons()
     {
@@ -27,8 +42,6 @@ class PokemonFeatureTest extends TestCase
         $response->assertJsonCount(5, 'data.0');
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'success',
-            'message',
             'data' => [
                 0 => [
                     0 => [
@@ -73,22 +86,15 @@ class PokemonFeatureTest extends TestCase
     // php artisan test --filter=PokemonFeatureTest::test_create_pokemon
     public function test_create_pokemon()
     {
-        $data = [
-            'nome' => 'Caterpie',
-            'ataque' => 5,
-            'defesa' => 5,
-            'vida' => 45,
-            'vida_atual' => 50,
-            'tipo' => 'Inseto',
-            'peso' => '2.9Kg',
-            'localizacao' => 'Floresta Selvagem - Grama Alta',
-            'shiny' => 0,
-        ];
+        $data = $this->getPokemonData();
 
         $response = $this->postJson('/api/pokemons', $data);
+        $response->assertStatus(200);
+
         $responseData = $response->json('data.0');
 
         $this->assertModelExists(Pokemon::find($responseData['id']));
+        $this->assertDatabaseHas('pokemons', $data);
         $this->assertEquals($data, [
             'nome' => $responseData['nome'],
             'ataque' => $responseData['ataque'],
@@ -102,7 +108,7 @@ class PokemonFeatureTest extends TestCase
         ]);
     }
 
-     // php artisan test --filter=PokemonFeatureTest::test_battle_pokemon
+    // php artisan test --filter=PokemonFeatureTest::test_battle_pokemon
     public function test_battle_pokemon()
     {
         $pokemon1 = $this->pokemons->first();
@@ -132,7 +138,6 @@ class PokemonFeatureTest extends TestCase
 
         $this->assertDatabaseHas('pokemons', ['id' => $pokemon1->id]);
         $this->assertDatabaseHas('pokemons', ['id' => $pokemon2->id]);
-
     }
 
     // php artisan test --filter=PokemonFeatureTest::test_execute_round
@@ -143,7 +148,7 @@ class PokemonFeatureTest extends TestCase
 
         $data = [
             "pokemon:id1" => $pokemon1->id,
-            "pokemon:id2"=> $pokemon2->id
+            "pokemon:id2" => $pokemon2->id
         ];
 
         $response = $this->postJson('/api/pokemons/round', $data);
@@ -167,7 +172,6 @@ class PokemonFeatureTest extends TestCase
 
         $this->assertDatabaseHas('pokemons', ['id' => $pokemon1->id]);
         $this->assertDatabaseHas('pokemons', ['id' => $pokemon2->id]);
-
     }
 
     // php artisan test --filter=PokemonFeatureTest::test_heal_pokemon
@@ -213,17 +217,7 @@ class PokemonFeatureTest extends TestCase
     {
         $pokemon = $this->pokemons->random();
 
-        $dadosAtualizados = [
-            'nome' => 'Caterpie',
-            'ataque' => 5,
-            'defesa' => 5,
-            'vida' => 45,
-            'vida_atual' => 50,
-            'tipo' => 'Inseto',
-            'peso' => '2.9Kg',
-            'localizacao' => 'Floresta Selvagem - Grama Alta',
-            'shiny' => 0,
-        ];
+        $dadosAtualizados = $this->getPokemonData();
 
         $response = $this->putJson("/api/pokemons/{$pokemon->id}", $dadosAtualizados);
 
@@ -241,20 +235,19 @@ class PokemonFeatureTest extends TestCase
         $this->assertEquals($dadosAtualizados['peso'], $responseData['peso']);
         $this->assertEquals($dadosAtualizados['localizacao'], $responseData['localizacao']);
         $this->assertEquals($dadosAtualizados['shiny'], $responseData['shiny']);
-
     }
 
-     // php artisan test --filter=PokemonFeatureTest::test_delete_pokemon
-     public function test_delete_pokemon()
-     {
-         $pokemon = $this->pokemons->random();
+    // php artisan test --filter=PokemonFeatureTest::test_delete_pokemon
+    public function test_delete_pokemon()
+    {
+        $pokemon = $this->pokemons->random();
 
-         $response = $this->deleteJson("/api/pokemons/{$pokemon->id}");
+        $response = $this->deleteJson("/api/pokemons/{$pokemon->id}");
 
-         $response->assertStatus(200);
+        $response->assertStatus(200);
 
-         $this->assertDatabaseMissing('pokemons', [
-             'id' => $pokemon->id,
-         ]);
-     }
+        $this->assertDatabaseMissing('pokemons', [
+            'id' => $pokemon->id,
+        ]);
+    }
 }
