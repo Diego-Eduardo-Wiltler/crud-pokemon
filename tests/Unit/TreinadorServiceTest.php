@@ -19,7 +19,6 @@ class TreinadorServiceTest extends TestCase
     {
         parent::setUp();
         $this->setUpDatabase();
-
         $this->treinadorService = new TreinadorService();
     }
 
