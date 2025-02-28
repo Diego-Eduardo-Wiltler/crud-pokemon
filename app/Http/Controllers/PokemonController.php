@@ -149,6 +149,7 @@ class PokemonController extends Controller
     {
         $id1 = $request->input('pokemon:id1');
         $id2 = $request->input('pokemon:id2');
+
         $result = $this->pokemonService->battlePokemon($id1, $id2);
 
         return $this->successResponse([
