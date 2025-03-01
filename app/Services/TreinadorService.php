@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Pokemon;
 use App\Models\Treinador;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,7 +23,6 @@ class TreinadorService
             'message' => 'Lista de treinadores encontrados',
             'data' => $treinadores,
         ];
-
     }
 
     /**
@@ -74,8 +74,31 @@ class TreinadorService
             'message' => 'Treinador cadastrado',
             'data' => $treinador,
         ];
+    }
 
+    public function storeTreinadorTrade($id1, $id2)
+    {
+        $treinador1 = Treinador::findOrFail($id1);
+        $treinador2 = Treinador::findOrFail($id2);
 
+        $pokemon1 = $treinador1->pokemon_id;
+        $pokemon2 = $treinador2->pokemon_id;
+
+        $treinador1->pokemon_id = $pokemon2;
+        $treinador2->pokemon_id = $pokemon1;
+
+        $treinador1->save();
+        $treinador2->save();
+
+        $treinadores = [
+            $treinador1,
+            $treinador2,
+        ];
+
+        return [
+            // 'trade_message' => $trade_message,
+            'data' => $treinadores
+        ];
     }
 
     /**
