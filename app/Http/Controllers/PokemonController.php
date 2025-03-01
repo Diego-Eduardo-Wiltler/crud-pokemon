@@ -121,6 +121,43 @@ class PokemonController extends Controller
         ]);
     }
 
+
+    /**
+     * POST pokemons/healing
+     *
+     * Realiza a cura de um pokemon
+     *
+     * @bodyParam pokemon:id int required id do pokemon. Example: 1
+     *
+     * @response 200 array{
+     *   success: true,
+     *   message: string,
+     *   data: PokemonResource
+     * }
+     *
+     * @response 400 array{
+     *   success: false,
+     *   message: string
+     * }
+     *
+     * @param Request $request Requisição contendo os dados do pokemon
+     * @param int $id ID do pokemon a ser curado
+     * @return JsonResponse
+     *
+     *
+     */
+
+     public function storeLife(Request $request): JsonResponse
+     {
+         $id = $request->input('pokemon:id');
+         $result = $this->pokemonService->healPokemon($id);
+
+         return $this->successResponse([
+             'life_recover' => $result['life_recover'],
+             'pokemon' => new PokemonResource($result['data'])
+         ]);
+     }
+
     /**
      * POST pokemons/battle
      *
@@ -239,42 +276,6 @@ class PokemonController extends Controller
 
         return $this->successResponse([
             new PokemonResource($result['data'])
-        ]);
-    }
-
-    /**
-     * POST pokemons/healing
-     *
-     * Realiza a cura de um pokemon
-     *
-     * @bodyParam pokemon:id int required id do pokemon. Example: 1
-     *
-     * @response 200 array{
-     *   success: true,
-     *   message: string,
-     *   data: PokemonResource
-     * }
-     *
-     * @response 400 array{
-     *   success: false,
-     *   message: string
-     * }
-     *
-     * @param Request $request Requisição contendo os dados do pokemon
-     * @param int $id ID do pokemon a ser curado
-     * @return JsonResponse
-     *
-     *
-     */
-
-    public function storeLife(Request $request): JsonResponse
-    {
-        $id = $request->input('pokemon:id');
-        $result = $this->pokemonService->healPokemon($id);
-
-        return $this->successResponse([
-            'life_recover' => $result['life_recover'],
-            'pokemon' => new PokemonResource($result['data'])
         ]);
     }
 
