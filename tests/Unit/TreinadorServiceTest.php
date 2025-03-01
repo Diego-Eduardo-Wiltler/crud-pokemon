@@ -22,7 +22,7 @@ class TreinadorServiceTest extends TestCase
         $this->setUpDatabase();
         $this->treinadorService = new TreinadorService();
 
-        $this->treinadorService = Mockery::mock(TreinadorService::class);
+        //$this->treinadorService = Mockery::mock(TreinadorService::class);
         $this->app->instance(TreinadorService::class, $this->treinadorService);
     }
 
@@ -87,12 +87,12 @@ class TreinadorServiceTest extends TestCase
     {
         $data = $this->getTreinadorData();
 
-        $this->treinadorService
-            ->shouldReceive('storeTreinador')
-            ->with($data)
-            ->andReturn([
-                'data' => new Treinador($data)
-            ]);
+        // $this->treinadorService
+        //     ->shouldReceive('storeTreinador')
+        //     ->with($data)
+        //     ->andReturn([
+        //         'data' => new Treinador($data)
+        //     ]);
 
         $response = $this->treinadorService->storeTreinador($data);
 
@@ -102,15 +102,32 @@ class TreinadorServiceTest extends TestCase
 
         $this->assertInstanceOf(Treinador::class, $treinadorCriado);
 
-        // Verifica se os dados foram persistidos no banco de dados
-        // $this->assertDatabaseHas('treinadores', [
-        //     'nome' => $data['nome'],
-        //     'email' => $data['email'],
-        //     'regiao' => $data['regiao'],
-        //     'tipo_favorito' => $data['tipo_favorito'],
-        //     'idade' => $data['idade'],
-        //     'pokemon_id' => $data['pokemon_id'],
-        // ]);
+        $this->assertDatabaseHas('treinadores', [
+            'nome' => $data['nome'],
+            'email' => $data['email'],
+            'regiao' => $data['regiao'],
+            'tipo_favorito' => $data['tipo_favorito'],
+            'idade' => $data['idade'],
+            'pokemon_id' => $data['pokemon_id'],
+        ]);
+    }
+
+    // php artisan test --filter=TreinadorServiceTest::test_trade_treinador
+    public function test_trade_treinador()
+    {
+        $id1 = $this->treinadores->random()->id;
+        $id2 = $this->treinadores->random()->id;
+
+        $this->treinadores->load('pokemon');
+
+        $response = $this->treinadorService->storeTreinadorTrade($id1, $id2);
+
+        $listarTreinadores = $response['data'];
+
+        $this->assertCount(2, $listarTreinadores);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertArrayHasKey('trade_message', $response);
+
     }
 
     // php artisan test --filter=TreinadorServiceTest::test_update_treinador

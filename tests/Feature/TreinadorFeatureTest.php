@@ -117,6 +117,25 @@ class TreinadorFeatureTest extends TestCase
         ]);
     }
 
+    // php artisan test --filter=TreinadorFeatureTest::test_trade_treinador
+    public function test_trade_treinador()
+    {
+        $treinador1 = $this->treinadores->first();
+        $treinador2 = $this->treinadores->get(1);
+
+        $data = [
+            "treinador:id1" => $treinador1->id,
+            "treinador:id2" => $treinador2->id
+        ];
+
+        $response = $this->postJson('/api/treinadores-trade', $data);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('treinadores', ['id' => $treinador1->id]);
+        $this->assertDatabaseHas('treinadores', ['id' => $treinador2->id]);
+    }
+
     // php artisan test --filter=TreinadorFeatureTest::test_update_treinador
     public function test_update_treinador()
     {
