@@ -102,6 +102,7 @@ class TreinadorController extends Controller
         $result = $this->treinadorService->getTreinadoresPokemons();
 
         return $this->successResponse([
+
             TreinadorPokemonResource::collection($result['data'])
         ]);
     }
@@ -143,6 +144,19 @@ class TreinadorController extends Controller
         return $this->successResponse([
             new TreinadorResource($result['data'])
         ]);
+    }
+
+    public function storeTrade(Request $request): JsonResponse
+    {
+       $id1 = $request->input('treinador:id1');
+       $id2 = $request->input('treinador:id2');
+
+       $result = $this->treinadorService->storeTreinadorTrade($id1, $id2);
+
+       return $this->successResponse([
+        // 'trade_message' => $result['trade_message'],
+            TreinadorPokemonResource::collection($result['data'])
+       ]);
     }
 
     /**
