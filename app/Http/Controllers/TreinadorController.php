@@ -102,7 +102,6 @@ class TreinadorController extends Controller
         $result = $this->treinadorService->getTreinadoresPokemons();
 
         return $this->successResponse([
-
             TreinadorPokemonResource::collection($result['data'])
         ]);
     }
@@ -154,8 +153,8 @@ class TreinadorController extends Controller
        $result = $this->treinadorService->storeTreinadorTrade($id1, $id2);
 
        return $this->successResponse([
-        // 'trade_message' => $result['trade_message'],
-            TreinadorPokemonResource::collection($result['data'])
+        'trade_message' => $result['trade_message'],
+        'treinadores' => TreinadorPokemonResource::collection($result['data'])
        ]);
     }
 

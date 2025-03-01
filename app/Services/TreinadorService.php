@@ -95,8 +95,19 @@ class TreinadorService
             $treinador2,
         ];
 
+        $nomesPokemons = array_map(function ($treinador) {
+            return $treinador->pokemon->nome ?? 'Nada';
+        }, $treinadores);
+
+        $trade_message = [
+            'Iniciando troca...',
+            'O treinador ' . $treinador1->nome . ' ofereceu ' . $nomesPokemons[1],
+            'Em troca' . ' o treinador ' . $treinador2->nome . ' ofereceu ' . $nomesPokemons[0],
+            'A troca foi realizada com sucesso...'
+        ];
+
         return [
-            // 'trade_message' => $trade_message,
+            'trade_message' => $trade_message,
             'data' => $treinadores
         ];
     }
