@@ -78,38 +78,49 @@ class TreinadorService
 
     public function storeTreinadorTrade($id1, $id2)
     {
-        $treinador1 = Treinador::findOrFail($id1);
-        $treinador2 = Treinador::findOrFail($id2);
+        try {
 
-        $pokemon1 = $treinador1->pokemon_id;
-        $pokemon2 = $treinador2->pokemon_id;
+            DB::beginTransaction();
 
-        $treinador1->pokemon_id = $pokemon2;
-        $treinador2->pokemon_id = $pokemon1;
+            $treinador1 = Treinador::findOrFail($id1);
+            $treinador2 = Treinador::findOrFail($id2);
 
-        $treinador1->save();
-        $treinador2->save();
+            $pokemon1 = $treinador1->pokemon_id;
+            $pokemon2 = $treinador2->pokemon_id;
 
-        $treinadores = [
-            $treinador1,
-            $treinador2,
-        ];
+            $treinador1->pokemon_id = $pokemon2;
+            $treinador2->pokemon_id = $pokemon1;
 
-        $nomesPokemons = array_map(function ($treinador) {
-            return $treinador->pokemon->nome ?? 'Nada';
-        }, $treinadores);
+            $treinador1->save();
+            $treinador2->save();
 
-        $trade_message = [
-            'Iniciando troca...',
-            'O treinador ' . $treinador1->nome . ' ofereceu ' . $nomesPokemons[1],
-            'Em troca' . ' o treinador ' . $treinador2->nome . ' ofereceu ' . $nomesPokemons[0],
-            'A troca foi realizada com sucesso...'
-        ];
+            DB::commit();
 
-        return [
-            'trade_message' => $trade_message,
-            'data' => $treinadores
-        ];
+            $treinadores = [
+                $treinador1,
+                $treinador2,
+            ];
+
+            $nomesPokemons = array_map(function ($treinador) {
+                return $treinador->pokemon->nome ?? 'Nada';
+            }, $treinadores);
+
+            $trade_message = [
+                'Iniciando troca...',
+                'O treinador ' . $treinador1->nome . ' ofereceu ' . $nomesPokemons[1],
+                'Em troca' . ' o treinador ' . $treinador2->nome . ' ofereceu ' . $nomesPokemons[0],
+                'A troca foi realizada com sucesso...'
+            ];
+
+            return [
+                'trade_message' => $trade_message,
+                'data' => $treinadores
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            throw new \Exception($e->getMessage());
+        }
     }
 
     /**
