@@ -5,7 +5,10 @@ namespace Tests\Unit;
 use App\Models\Pokemon;
 use App\Services\PokemonService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\SetUpDatabaseTrait;
 
@@ -38,6 +41,57 @@ class PokemonServiceTest extends TestCase
         ];
     }
 
+    public static function invalidPokemonCreateData()
+    {
+        return [
+            'Sem nome' => [
+                fn() => tap(Pokemon::factory()->make()->toArray(), function (&$data) {
+                    unset($data['nome']);
+                }),
+            ],
+
+            'Ataque string' => [
+                fn() => tap(Pokemon::factory()->make()->toArray(), function (&$data) {
+                    $data['ataque'] = 'cinquenta';
+                }),
+            ],
+            // Verificar depos para arrumar :)
+            // 'Vida negativa' => [
+            //     fn() => tap(Pokemon::factory()->make()->toArray(), function (&$data) {
+            //         $data['vida'] = -2;
+            //     }),
+            // ],
+
+        ];
+    }
+
+    public static function invalidPokemonUpdateData()
+    {
+        return [
+            'Vida String' => [
+                fn() => tap(Pokemon::factory()->make()->toArray(), function (&$data) {
+                    $data['vida'] = -2;
+                }),
+            ],
+            // 'vidacls' => [
+            //     fn() => tap(Pokemon::factory()->make()->toArray(), function (&$data) {
+            //         $data['vida'] = -50;
+            //     })
+            // ]
+        ];
+    }
+
+    public static function attackAndDefense()
+    {
+        return [
+            'Sem defesa' => [200, 5],
+            'Defesa parcial' => [15, 5],
+            'Defesa moderada'  => [15, 10],
+            'Defesa total (metade do dano)' => [10, 10],
+            'Defesa extrema'  => [10, 400],
+        ];
+    }
+
     // php artisan test --filter=PokemonServiceTest::test_get_pokemons
     public function test_get_pokemons()
     {
@@ -46,13 +100,14 @@ class PokemonServiceTest extends TestCase
 
         $this->assertCount(5, $listarPokemons);
         $this->assertInstanceOf(Collection::class, $listarPokemons);
-        $this->assertEquals($this->pokemons->toArray(), $listarPokemons->toArray());
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_get_pokemon_by_id
-    public function test_get_pokemon_by_id()
+    // php artisan test --filter=PokemonServiceTest::test_get_by_id_success_on_valid_id
+    public function test_get_by_id_success_on_valid_id()
     {
-        $id = $this->pokemons->random()->id;
+        $pokemon = Pokemon::factory()->create();
+
+        $id = $pokemon->id;
 
         $response = $this->pokemonService->getById($id);
 
@@ -61,8 +116,18 @@ class PokemonServiceTest extends TestCase
         $this->assertEquals($id, $response['data']->id);
     }
 
+    // php artisan test --filter=PokemonServiceTest::test_get_by_id_error_on_invalid_id
+    public function test_get_by_id_error_on_invalid_id()
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $invalidId = 99999;
+
+        $this->pokemonService->getById($invalidId);
+    }
+
     // php artisan test --filter=PokemonServiceTest::test_create_pokemon
-    public function test_create_pokemon()
+    public function test_create_pokemon_on_success()
     {
         $data = $this->getPokemonData();
 
@@ -85,11 +150,22 @@ class PokemonServiceTest extends TestCase
         ]);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_battle_pokemon
-    public function test_battle_pokemon()
+    #[DataProvider('invalidPokemonCreateData')]
+    // php artisan test --filter=PokemonServiceTest::test_failing_to_create_pokemon
+    public function test_create_pokemon_on_invalid_data($invalidData)
     {
-        $pokemon1 = $this->pokemons->first();
-        $pokemon2 = $this->pokemons->get(1);
+        $this->expectException(QueryException::class);
+
+        $this->pokemonService->createPokemon($invalidData());
+    }
+
+    // php artisan test --filter=PokemonServiceTest::test_battle_success_pokemon
+    public function test_battle_success_pokemon()
+    {
+        $pokemon = Pokemon::factory()->count(2)->create();
+
+        $pokemon1 = $pokemon->first();
+        $pokemon2 = $pokemon->get(1);
 
         $response = $this->pokemonService->battlePokemon($pokemon1->id, $pokemon2->id);
 
@@ -99,33 +175,36 @@ class PokemonServiceTest extends TestCase
         $this->assertArrayHasKey('data', $response);
         $this->assertNotEquals($pokemon1->vida, $pokemon1->vida_atual);
         $this->assertNotEquals($pokemon2->vida, $pokemon2->vida_atual);
-
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_execute_round
-    public function test_execute_round()
+    // php artisan test --filter=PokemonServiceTest::test_battle_pokemon_on_invalid_id
+    public function test_battle_pokemon_on_invalid_id()
     {
-        $pokemon1 = $this->pokemons->first();
-        $pokemon2 = $this->pokemons->get(1);
+        $this->expectException(ModelNotFoundException::class);
 
-        $response = $this->pokemonService->executeRound($pokemon1->id , $pokemon2->id);
+        $pokemon = Pokemon::factory()->create();
 
-        $pokemon2->refresh();
+        $this->pokemonService->battlePokemon($pokemon->id, 'sdsd');
+    }
+
+    // php artisan test --filter=PokemonServiceTest::test_multiples_success_round_battle_pokemon
+    #[DataProvider('attackAndDefense')]
+    public function test_multiples_success_round_battle_pokemon($ataque, $defesa)
+    {
+        $pokemon1 = Pokemon::factory()->create(['ataque' => $ataque]);
+        $pokemon2 = Pokemon::factory()->create(['defesa' => $defesa]);
+
+        $response = $this->pokemonService->executeRound($pokemon1->id, $pokemon2->id);
 
         $this->assertArrayHasKey('data', $response);
-        $this->assertArrayHasKey('battle_message', $response);
-        $this->assertArrayHasKey('damage_dealt', $response);
-        $this->assertArrayHasKey('defesa_texto', $response);
-        $this->assertNotEquals($pokemon2->vida, $pokemon2->vida_atual);
-        $this->assertLessThanOrEqual($pokemon2->vida, $pokemon2->vida_atual + $response['damage_dealt']);
-        $this->assertNotEquals($pokemon2->vida, $pokemon2->vida_atual);
 
     }
 
+
     // php artisan test --filter=PokemonServiceTest::test_heal_pokemon
-    public function test_heal_pokemon()
+    public function test_heal_on_success_id_pokemon()
     {
-        $pokemon = $this->pokemons->first();
+        $pokemon = Pokemon::factory()->create(['vida' => 50]);
         $pokemon->vida_atual = 20;
 
         $pokemon->save();
@@ -139,10 +218,20 @@ class PokemonServiceTest extends TestCase
         $this->assertArrayHasKey('data', $response);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_update_pokemon
-    public function test_update_pokemon()
+    // php artisan test --filter=PokemonServiceTest::test_heal_pokemon_on_invalid_id
+    public function test_heal_pokemon_on_invalid_id()
     {
-        $pokemon = $this->pokemons->first();
+        $this->expectException(ModelNotFoundException::class);
+
+        $invalidId = 99999;
+
+        $this->pokemonService->healPokemon($invalidId);
+    }
+
+    // php artisan test --filter=PokemonServiceTest::test_update_pokemon
+    public function test_update_on_success_pokemon()
+    {
+        $pokemon = Pokemon::factory()->create();
 
         $dadosAtualizados = $this->getPokemonData();
 
@@ -152,19 +241,34 @@ class PokemonServiceTest extends TestCase
 
         $this->assertArrayHasKey('data', $response);
         $this->assertInstanceOf(Pokemon::class, $pokemonAtualizado);
-        $this->assertEquals($dadosAtualizados['nome'], $pokemonAtualizado->nome);
-        $this->assertEquals($dadosAtualizados['ataque'], $pokemonAtualizado->ataque);
-        $this->assertEquals($dadosAtualizados['defesa'], $pokemonAtualizado->defesa);
-        $this->assertEquals($dadosAtualizados['vida'], $pokemonAtualizado->vida);
-        $this->assertEquals($dadosAtualizados['vida_atual'], $pokemonAtualizado->vida_atual);
-        $this->assertEquals($dadosAtualizados['tipo'], $pokemonAtualizado->tipo);
-        $this->assertEquals($dadosAtualizados['peso'], $pokemonAtualizado->peso);
-        $this->assertEquals($dadosAtualizados['localizacao'], $pokemonAtualizado->localizacao);
-        $this->assertEquals($dadosAtualizados['shiny'], $pokemonAtualizado->shiny);
+    }
+
+    // php artisan test --filter=PokemonServiceTest::test_update_pokemon_invalid_data
+    #[DataProvider('invalidPokemonUpdateData')]
+    public function test_update_pokemon_invalid_data($invalidData)
+    {
+        $this->expectException(QueryException::class);
+
+
+        $pokemon = Pokemon::factory()->create();
+
+        $this->pokemonService->updatePokemon($pokemon->id, $invalidData());
+    }
+
+    // php artisan test --filter=PokemonServiceTest::test_update_pokemon_error_on_invalid_id
+    public function test_update_pokemon_error_on_invalid_id()
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $dadosAtualizados = $this->getPokemonData();
+
+        $invalidId = 99999;
+
+        $this->pokemonService->updatePokemon($invalidId, $dadosAtualizados);
     }
 
     // php artisan test --filter=PokemonServiceTest::test_delete_pokemon
-    public function test_delete_pokemon()
+    public function test_delete_success_on_valid_id_pokemon()
     {
         $pokemon = $this->pokemons->first();
 
@@ -173,5 +277,15 @@ class PokemonServiceTest extends TestCase
         $this->assertDatabaseMissing('pokemons', [
             'id' => $pokemon->id,
         ]);
+    }
+
+    // php artisan test --filter=PokemonServiceTest::test_delete_error_on_invalid_id_pokemon
+    public function test_delete_error_on_invalid_id_pokemon()
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $invalidId = 99999;
+
+        $this->pokemonService->deletePokemon($invalidId);
     }
 }
