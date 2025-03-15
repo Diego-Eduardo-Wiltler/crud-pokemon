@@ -25,14 +25,15 @@ return Application::configure(basePath: dirname(__DIR__))
 
             if($exception instanceof NotFoundHttpException){
                 return response()->json([
-                    'message' => 'Id not found',
+                    'message' => 'Something is not right.',
                     'errors' => $exception->getMessage(),
                     'errorResponse' => 30,
                 ], 200);
             }
 
             return response()->json([
-                'message' => 'Something went wrong. Please try again later.'
+                'message' => 'Something went wrong. Please try again later.',
+                'erros' => $exception->getMessage()
             ], 500);
         });
     })->create();
