@@ -38,6 +38,7 @@ class PokemonUpdateFormRequest extends FormRequest
     {
         return [
             'nome.required' => 'O nome é obrigatório.',
+            'nome.string' => 'O nome deve ser uma string',
             'ataque.required' => 'O ataque é obrigatório.',
             'ataque.integer' => 'O ataque deve ser um número inteiro.',
             'ataque.min' => 'O ataque não pode ser menor que 5.',
