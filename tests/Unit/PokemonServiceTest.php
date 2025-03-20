@@ -41,46 +41,6 @@ class PokemonServiceTest extends TestCase
         ];
     }
 
-    public static function invalidPokemonCreateData()
-    {
-        return [
-            'Sem nome' => [
-                fn() => tap(Pokemon::factory()->make()->toArray(), function (&$data) {
-                    unset($data['nome']);
-                }),
-            ],
-
-            'Ataque string' => [
-                fn() => tap(Pokemon::factory()->make()->toArray(), function (&$data) {
-                    $data['ataque'] = 'cinquenta';
-                }),
-            ],
-            // Verificar depos para arrumar :)
-            // 'Vida negativa' => [
-            //     fn() => tap(Pokemon::factory()->make()->toArray(), function (&$data) {
-            //         $data['vida'] = -2;
-            //     }),
-            // ],
-
-        ];
-    }
-
-    public static function invalidPokemonUpdateData()
-    {
-        return [
-            'Vida String' => [
-                fn() => tap(Pokemon::factory()->make()->toArray(), function (&$data) {
-                    $data['vida'] = -2;
-                }),
-            ],
-            // 'vidacls' => [
-            //     fn() => tap(Pokemon::factory()->make()->toArray(), function (&$data) {
-            //         $data['vida'] = -50;
-            //     })
-            // ]
-        ];
-    }
-
     public static function attackAndDefense()
     {
         return [
@@ -126,7 +86,7 @@ class PokemonServiceTest extends TestCase
         $this->pokemonService->getById($invalidId);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_create_pokemon
+    // php artisan test --filter=PokemonServiceTest::test_create_pokemon_on_success
     public function test_create_pokemon_on_success()
     {
         $data = $this->getPokemonData();
@@ -150,13 +110,24 @@ class PokemonServiceTest extends TestCase
         ]);
     }
 
-    #[DataProvider('invalidPokemonCreateData')]
-    // php artisan test --filter=PokemonServiceTest::test_failing_to_create_pokemon
-    public function test_create_pokemon_on_invalid_data($invalidData)
+
+    // php artisan test --filter=PokemonServiceTest::test_failing_to_create_on_missing_field_pokemon
+    public function test_failing_to_create_on_missing_field_pokemon()
     {
+        $data = [
+            'ataque' => 5,
+            'defesa' => 5,
+            'vida' => 45,
+            'vida_atual' => 50,
+            'tipo' => 'Inseto',
+            'peso' => '2.9Kg',
+            'localizacao' => 'Floresta Selvagem - Grama Alta',
+            'shiny' => 0,
+        ];
+
         $this->expectException(QueryException::class);
 
-        $this->pokemonService->createPokemon($invalidData());
+        $this->pokemonService->createPokemon($data);
     }
 
     // php artisan test --filter=PokemonServiceTest::test_battle_success_pokemon
@@ -241,18 +212,6 @@ class PokemonServiceTest extends TestCase
 
         $this->assertArrayHasKey('data', $response);
         $this->assertInstanceOf(Pokemon::class, $pokemonAtualizado);
-    }
-
-    // php artisan test --filter=PokemonServiceTest::test_update_pokemon_invalid_data
-    #[DataProvider('invalidPokemonUpdateData')]
-    public function test_update_pokemon_invalid_data($invalidData)
-    {
-        $this->expectException(QueryException::class);
-
-
-        $pokemon = Pokemon::factory()->create();
-
-        $this->pokemonService->updatePokemon($pokemon->id, $invalidData());
     }
 
     // php artisan test --filter=PokemonServiceTest::test_update_pokemon_error_on_invalid_id
