@@ -82,9 +82,12 @@ class PokemonService
             $vencedor = $pokemon1;
         } elseif ($pokemon2->vida_atual > 0 && $pokemon1->vida_atual <= 0) {
             $vencedor = $pokemon2;
+        } else{
+            $vencedor = null;
         }
+
         return [
-            "win_message" => 'O pokémon vencedor é',
+            "win_message" => $vencedor ? 'O pokémon vencedor é' : 'Empate na luta!',
             "data" => $vencedor
         ];
     }
