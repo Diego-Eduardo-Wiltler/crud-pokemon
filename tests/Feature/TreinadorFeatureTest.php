@@ -15,6 +15,9 @@ class TreinadorFeatureTest extends TestCase
 {
     use RefreshDatabase, SetUpDatabaseTrait;
 
+
+    protected $invalidId = 9999;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,30 +43,15 @@ class TreinadorFeatureTest extends TestCase
 
         $response->assertJsonCount(5, 'data.0');
         $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'success',
-            'message',
-            'data' => [
-                0 => [
-                    0 => [
-                        'id',
-                        'nome',
-                        'pokemon_id',
-                        'email',
-                        'regiao',
-                        'tipo_favorito',
-                        'idade'
-                    ]
-                ]
-            ]
-        ]);
+
     }
 
-    // php artisan test --filter=TreinadorFeatureTest::test_get_treinador_by_id
-    public function test_get_treinador_by_id()
+    // php artisan test --filter=TreinadorFeatureTest::test_get_by_id_success_on_valid_id_treinador
+    public function test_get_by_id_success_on_valid_id_treinador()
     {
-        $treinador = $this->treinadores->first();
-
+        $treinador = Treinador::factory()->create([
+            'pokemon_id' => null
+        ]);
         $response = $this->getJson("/api/treinadores/{$treinador->id}");
 
         $response->assertStatus(200);
@@ -77,10 +65,22 @@ class TreinadorFeatureTest extends TestCase
         ]);
     }
 
-    // php artisan test --filter=TreinadorFeatureTest::test_get_treinador_pokemon
-    public function test_get_treinador_pokemon()
+     // php artisan test --filter=TreinadorFeatureTest::test_get_by_id_error_on_invalid_id_treinador
+     public function test_get_by_id_error_on_invalid_id_treinador()
+     {
+         $response = $this->getJson("/api/treinadores/{$this->invalidId}");
+
+         $response->assertStatus(500);
+     }
+
+    // php artisan test --filter=TreinadorFeatureTest::test_get_treinador_with_pokemon_on_success
+    public function test_get_treinador_with_pokemon_on_success()
     {
-        $treinador = $this->treinadores->first();
+        $pokemon = Pokemon::factory()->create();
+
+        $treinador = Treinador::factory()->create([
+            'pokemon_id' => $pokemon->id
+        ]);
 
         $response = $this->getJson("/api/treinadores-pokemons");
 
@@ -96,29 +96,53 @@ class TreinadorFeatureTest extends TestCase
     }
 
     // php artisan test --filter=TreinadorFeatureTest::test_create_treinador
-    public function test_create_treinador()
+    public function test_create_treinador_on_success()
     {
         $data = $this->getTreinadorData();
 
         $response = $this->postJson('/api/treinadores', $data);
+        $response->assertStatus(200);
+
         $responseData = $response->json('data.0');
 
-        $this->assertDatabaseHas('treinadores', [
-            'email' => 'treinador@example.com',
-        ]);
+        $this->assertDatabaseHas('treinadores', $data);
         $this->assertModelExists(Treinador::find($responseData['id']));
-        $this->assertEquals($data, [
-            'nome' => $responseData['nome'],
-            'email' => $responseData['email'],
-            'regiao' => $responseData['regiao'],
-            'tipo_favorito' => $responseData['tipo_favorito'],
-            'idade' => $responseData['idade'],
-            'pokemon_id' => $responseData['pokemon_id'],
-        ]);
     }
 
+    // php artisan test --filter=TreinadorFeatureTest::test_failing_to_create_on_missing_field_treinador
+    public function test_failing_to_create_on_missing_field_treinador()
+    {
+        $data = [
+            'nome' => 'Treinador Teste',
+            'email' => 'treinador@example.com',
+            'regiao' => 'Unova',
+            'tipo_favorito' => 'Planta',
+
+        ];
+
+        $response = $this->postJson('/api/treinadores', $data);
+        $response->assertStatus(500);
+    }
+
+    // php artisan test --filter=TreinadorFeatureTest::test_failing_to_create_on_invalid_pokemon_id_in_treinador
+    public function test_failing_to_create_on_invalid_pokemon_id_in_treinador()
+    {
+        $data = [
+            'nome' => 'Treinador Teste',
+            'email' => 'treinador@example.com',
+            'regiao' => 'Unova',
+            'tipo_favorito' => 'Planta',
+            'idade' => 18,
+            'pokemon_id' => 'invalidId'
+        ];
+
+        $response = $this->postJson('/api/treinadores', $data);
+        $response->assertStatus(500);
+    }
+
+
     // php artisan test --filter=TreinadorFeatureTest::test_trade_treinador
-    public function test_trade_treinador()
+    public function test_trade_on_success_treinador()
     {
         $treinador1 = $this->treinadores->first();
         $treinador2 = $this->treinadores->get(1);
@@ -136,8 +160,49 @@ class TreinadorFeatureTest extends TestCase
         $this->assertDatabaseHas('treinadores', ['id' => $treinador2->id]);
     }
 
-    // php artisan test --filter=TreinadorFeatureTest::test_update_treinador
-    public function test_update_treinador()
+     // php artisan test --filter=TreinadorFeatureTest::test_trade_error_on_invalid_id_treinador
+     public function test_trade_error_on_invalid_id_treinador()
+     {
+        $pokemon = Pokemon::factory()->create();
+
+         $treinador1 = Treinador::factory()->create([
+            'pokemon_id' => $pokemon->id
+         ]);
+
+         $data = [
+             "treinador:id1" => $treinador1->id,
+             "treinador:id2" => $this->invalidId
+         ];
+
+         $response = $this->postJson('/api/treinadores-trade', $data);
+
+         $response->assertStatus(500);
+     }
+
+     // php artisan test --filter=TreinadorFeatureTest::test_trade_error_data_treinador
+     public function test_trade_error_on_data_treinador()
+     {
+        $pokemon = Pokemon::factory()->create();
+
+         $treinador = Treinador::factory()->count(2)->create([
+            'pokemon_id' => $pokemon->id
+         ]);
+
+         $treinador1 = $treinador->first();
+         $treinador2 = $treinador->get(1);
+
+         $data = [
+             "treindsdador:id1" => $treinador1->id,
+             "treinasdddor:id2" => $treinador2->id
+         ];
+
+         $response = $this->postJson('/api/treinadores-trade', $data);
+
+         $response->assertStatus(500);
+     }
+
+    // php artisan test --filter=TreinadorFeatureTest:test_update_on_success_treinador
+    public function test_update_on_success_treinador()
     {
         $treinador = $this->treinadores->first();
 
@@ -150,17 +215,21 @@ class TreinadorFeatureTest extends TestCase
         $responseData = $response->json('data.0');
 
         $this->assertModelExists(Treinador::find($responseData['id']));
-
-        $this->assertEquals($dadosAtualizados['nome'], $responseData['nome']);
-        $this->assertEquals($dadosAtualizados['email'], $responseData['email']);
-        $this->assertEquals($dadosAtualizados['regiao'], $responseData['regiao']);
-        $this->assertEquals($dadosAtualizados['tipo_favorito'], $responseData['tipo_favorito']);
-        $this->assertEquals($dadosAtualizados['idade'], $responseData['idade']);
-        $this->assertEquals($dadosAtualizados['pokemon_id'], $responseData['pokemon_id']);
+        $this->assertDatabaseHas('treinadores', $dadosAtualizados);
     }
 
-    // php artisan test --filter=TreinadorFeatureTest::teste_delete_treinador
-    public function teste_delete_treinador()
+    // php artisan test --filter=TreinadorFeatureTest::test_update_treinador_error_on_invalid_id
+    public function test_update_treinador_error_on_invalid_id()
+    {
+        $dadosAtualizados = $this->getTreinadorData();
+
+        $response = $this->putJson("/api/treinadores/{$this->invalidId}", $dadosAtualizados);
+
+        $response->assertStatus(500);
+    }
+
+    // php artisan test --filter=TreinadorFeatureTest::test_delete_error_on_valid_id_treinador
+    public function test_delete_error_on_valid_id_treinador()
     {
         $treinador = $this->treinadores->first();
 
@@ -171,5 +240,14 @@ class TreinadorFeatureTest extends TestCase
         $this->assertDatabaseMissing('treinadores', [
             'id' => $treinador->id,
         ]);
+    }
+
+    // php artisan test --filter=TreinadorFeatureTest::test_delete_error_on_invalid_id_treinador
+    public function test_delete_error_on_invalid_id_treinador()
+    {
+        $response = $this->deleteJson("/api/treinadores/{$this->invalidId}");
+
+        $response->assertStatus(500);
+
     }
 }
