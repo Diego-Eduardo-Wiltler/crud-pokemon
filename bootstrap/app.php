@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'message' => 'Something is not right.',
                     'errors' => $exception->getMessage(),
                     'errorResponse' => 30,
-                ], 200);
+                ], 500);
             }
 
             return response()->json([
