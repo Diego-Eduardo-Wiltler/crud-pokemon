@@ -49,8 +49,8 @@ class TreinadorServiceTest extends TestCase
         Mockery::close();
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_get_treinadores
-    public function test_get_treinadores()
+    // php artisan test --filter=TreinadorServiceTest::test_getTreinadores_success
+    public function test_getTreinadores_success()
     {
         $response = $this->treinadorService->getTreinador();
 
@@ -61,8 +61,8 @@ class TreinadorServiceTest extends TestCase
         $this->assertEquals($this->treinadores->toArray(), $listarTreinadores->toArray());
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_get_by_id_success_on_valid_id
-    public function test_get_by_id_success_on_valid_id_treinador()
+    // php artisan test --filter=TreinadorServiceTest::test_getTreinadorById_success
+    public function test_getTreinadorById_success()
     {
         $treinador = Treinador::factory()->create([
             'pokemon_id' => null
@@ -75,16 +75,16 @@ class TreinadorServiceTest extends TestCase
         $this->assertEquals($treinador->id, $response['data']->id);
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_get_by_id_error_on_invalid_id_treinador
-    public function test_get_by_id_error_on_invalid_id_treinador()
+    // php artisan test --filter=TreinadorServiceTest::test_getTreinadorById_invalidId
+    public function test_getTreinadorById_invalidId()
     {
         $this->expectException(ModelNotFoundException::class);
 
         $this->treinadorService->getById($this->invalidId);
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_get_treinador_pokemon
-    public function test_get_treinador_with_pokemon_on_success()
+    // php artisan test --filter=TreinadorServiceTest::test_getTreinadoresWithPokemons_success
+    public function test_getTreinadoresWithPokemons_success()
     {
         $this->treinadores->load('pokemon');
 
@@ -98,8 +98,8 @@ class TreinadorServiceTest extends TestCase
         $this->assertEquals($this->treinadores->toArray(), $listarTreinadores->toArray());
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_create_treinador_on_success
-    public function test_create_treinador_on_success()
+    // php artisan test --filter=TreinadorServiceTest::test_createTreinador_success
+    public function test_createTreinador_success()
     {
         $data = $this->getTreinadorData();
 
@@ -112,8 +112,8 @@ class TreinadorServiceTest extends TestCase
         $this->assertInstanceOf(Treinador::class, $treinadorCriado);
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_failing_to_create_on_missing_field_treinador
-    public function test_failing_to_create_on_missing_field_treinador()
+    // php artisan test --filter=TreinadorServiceTest::test_createTreinador_missingField
+    public function test_createTreinador_missingField()
     {
         $this->expectException(QueryException::class);
 
@@ -128,8 +128,8 @@ class TreinadorServiceTest extends TestCase
         $this->treinadorService->storeTreinador($data);
     }
 
-     // php artisan test --filter=TreinadorServiceTest::test_failing_to_create_on_invalid_pokemon_id_in_treinador
-     public function test_failing_to_create_on_invalid_pokemon_id_in_treinador()
+     // php artisan test --filter=TreinadorServiceTest::test_createTreinador_invalidPokemonId
+     public function test_createTreinador_invalidPokemonId()
      {
          $this->expectException(QueryException::class);
 
@@ -145,8 +145,8 @@ class TreinadorServiceTest extends TestCase
          $this->treinadorService->storeTreinador($data);
      }
 
-    // php artisan test --filter=TreinadorServiceTest::test_trade_on_success_treinadores
-    public function test_trade_on_success_treinadores()
+    // php artisan test --filter=TreinadorServiceTest::test_tradeTreinadores_success
+    public function test_tradeTreinadores_success()
     {
         $pokemons = Pokemon::factory()->count(2)->create();
 
@@ -164,8 +164,8 @@ class TreinadorServiceTest extends TestCase
         $this->assertArrayHasKey('trade_message', $response);
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_trade_error_on_invalid_id_treinador
-    public function test_trade_error_on_invalid_id_treinador()
+    // php artisan test --filter=TreinadorServiceTest::test_tradeTreinadores_invalidId
+    public function test_tradeTreinadores_invalidId()
     {
         $this->expectException(\Exception::class);
 
@@ -178,8 +178,8 @@ class TreinadorServiceTest extends TestCase
         $this->treinadorService->storeTreinadorTrade($treinador->id, $this->invalidId);
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_update_on_success_treinador
-    public function test_update_on_success_treinador()
+    // php artisan test --filter=TreinadorServiceTest::test_updateTreinador_success
+    public function test_updateTreinador_success()
     {
         $treinador = $this->treinadores->first();
 
@@ -194,8 +194,8 @@ class TreinadorServiceTest extends TestCase
         $this->assertInstanceOf(Treinador::class, $treinadorAtualizado);
     }
 
-     // php artisan test --filter=TreinadorServiceTest::test_update_treinador_error_on_invalid_id
-     public function test_update_treinador_error_on_invalid_id()
+     // php artisan test --filter=TreinadorServiceTest::test_updateTreinador_success
+     public function test_updateTreinador_invalidId()
      {
         $this->expectException(ModelNotFoundException::class);
 
@@ -204,8 +204,8 @@ class TreinadorServiceTest extends TestCase
         $this->treinadorService->updateTreinador($this->invalidId, $dadosAtualizados);
      }
 
-    // php artisan test --filter=TreinadorServiceTest::test_delete_success_on_valid_id_treinador
-    public function test_delete_success_on_valid_id_treinador()
+    // php artisan test --filter=TreinadorServiceTest::test_deleteTreinador_success
+    public function test_deleteTreinador_success()
     {
         $treinador = $this->treinadores->first();
 
@@ -216,8 +216,8 @@ class TreinadorServiceTest extends TestCase
         ]);
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_delete_error_on_invalid_id
-    public function test_delete_error_on_invalid_id()
+    // php artisan test --filter=TreinadorServiceTest::test_deleteTreinador_invalidId
+    public function test_deleteTreinador_invalidId()
     {
         $this->expectException(ModelNotFoundException::class);
 

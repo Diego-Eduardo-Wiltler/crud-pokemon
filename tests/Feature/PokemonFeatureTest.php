@@ -37,8 +37,8 @@ class PokemonFeatureTest extends TestCase
         ];
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_get_pokemons
-    public function test_get_pokemons()
+    // php artisan test --filter=PokemonFeatureTest::test_getPokemons_success
+    public function test_getPokemons_success()
     {
         $response = $this->getJson('/api/pokemons');
 
@@ -46,8 +46,8 @@ class PokemonFeatureTest extends TestCase
         $response->assertStatus(200);
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_get_by_id_success_on_valid_id_pokemon
-    public function test_get_by_id_success_on_valid_id_pokemon()
+    // php artisan test --filter=PokemonFeatureTest::test_getPokemonById_success
+    public function test_getPokemonById_success()
     {
         $pokemon = Pokemon::factory()->create();
 
@@ -68,16 +68,16 @@ class PokemonFeatureTest extends TestCase
         ]);
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_get_by_id_error_on_invalid_id_pokemon
-    public function test_get_by_id_error_on_invalid_id_pokemon()
+    // php artisan test --filter=PokemonFeatureTest::test_getPokemonById_invalidId
+    public function test_getPokemonById_invalidId()
     {
         $response = $this->getJson("api/pokemons/{$this->invalidId}");
 
         $response->assertStatus(500);
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_create_pokemon_on_success
-    public function test_create_pokemon_on_success()
+    // php artisan test --filter=PokemonFeatureTest::test_createPokemon_success
+    public function test_createPokemon_success()
     {
         $data = $this->getPokemonData();
 
@@ -90,8 +90,8 @@ class PokemonFeatureTest extends TestCase
         $this->assertDatabaseHas('pokemons', $data);
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_failing_to_create_on_missing_field_pokemon
-    public function test_failing_to_create_on_missing_field_pokemon()
+    // php artisan test --filter=PokemonFeatureTest::test_createPokemon_missingField
+    public function test_createPokemon_missingField()
     {
         $data = [
             'ataque' => 5,
@@ -108,8 +108,8 @@ class PokemonFeatureTest extends TestCase
         $response->assertStatus(500);
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_battle_success_pokemon
-    public function test_battle_success_pokemon()
+    // php artisan test --filter=PokemonFeatureTest::test_battlePokemon_success
+    public function test_battlePokemon_success()
     {
         $pokemon = Pokemon::factory()->count(2)->create();
 
@@ -129,8 +129,8 @@ class PokemonFeatureTest extends TestCase
         $this->assertDatabaseHas('pokemons', ['id' => $pokemon2->id]);
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_battle_pokemon_on_invalid_id
-    public function test_battle_pokemon_on_invalid_id()
+    // php artisan test --filter=PokemonFeatureTest::test_battlePokemon_invalidId
+    public function test_battlePokemon_invalidId()
     {
         $pokemon = Pokemon::factory()->create();
 
@@ -144,8 +144,8 @@ class PokemonFeatureTest extends TestCase
 
     }
 
-     // php artisan test --filter=PokemonFeatureTest::test_battle_pokemon_with_same_id_returns_error
-     public function test_battle_pokemon_with_same_id_returns_error()
+     // php artisan test --filter=PokemonFeatureTest::test_battlePokemon_sameId_error
+     public function test_battlePokemon_sameId_error()
      {
          $pokemon = Pokemon::factory()->create();
 
@@ -159,8 +159,8 @@ class PokemonFeatureTest extends TestCase
 
      }
 
-     // php artisan test --filter=PokemonFeatureTest::test_battle_error_on_data_pokemon
-     public function test_battle_error_on_data_pokemon()
+     // php artisan test --filter=PokemonFeatureTest::test_battlePokemon_invalidData
+     public function test_battlePokemon_invalidData()
      {
         $pokemon = Pokemon::factory()->count(2)->create();
 
@@ -177,8 +177,8 @@ class PokemonFeatureTest extends TestCase
         $response->assertStatus(500);
      }
 
-    // php artisan test --filter=PokemonFeatureTest::test_execute_single_round_in_battle
-    public function test_execute_single_round_in_battle()
+    // php artisan test --filter=PokemonFeatureTest::test_battleRound_success
+    public function test_battleRound_success()
     {
         $pokemon = Pokemon::factory()->count(2)->create();
 
@@ -198,8 +198,8 @@ class PokemonFeatureTest extends TestCase
         $this->assertDatabaseHas('pokemons', ['id' => $pokemon2->id]);
     }
 
-     // php artisan test --filter=PokemonFeatureTest::test_execute_single_round_error_on_data_in_battle
-     public function test_execute_single_round_error_on_data_in_battle()
+     // php artisan test --filter=PokemonFeatureTest::test_battleRound_invalidData
+     public function test_battleRound_invalidData()
      {
          $pokemon = Pokemon::factory()->count(2)->create();
 
@@ -216,8 +216,8 @@ class PokemonFeatureTest extends TestCase
          $response->assertStatus(500);
      }
 
-    // php artisan test --filter=PokemonFeatureTest::test_battle_round_should_fail_on_invalid_id
-    public function test_battle_round_should_fail_on_invalid_id()
+    // php artisan test --filter=PokemonFeatureTest::test_battleRound_invalidId
+    public function test_battleRound_invalidId()
     {
         $data = [
             "pokemon:id1" => $this->invalidId,
@@ -229,8 +229,8 @@ class PokemonFeatureTest extends TestCase
         $response->assertStatus(500);
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_heal_on_success_id_pokemon
-    public function test_heal_on_success_id_pokemon()
+    // php artisan test --filter=PokemonFeatureTest::test_healPokemon_success
+    public function test_healPokemon_success()
     {
 
         $pokemon = Pokemon::factory()->create();
@@ -251,8 +251,8 @@ class PokemonFeatureTest extends TestCase
         $this->assertEquals($pokemon->vida, $pokemon->vida_atual);
     }
 
-     // php artisan test --filter=PokemonFeatureTest::test_heal_error_on_data_pokemon
-     public function test_heal_error_on_data_pokemon()
+     // php artisan test --filter=PokemonFeatureTest::test_healPokemon_invalidData
+     public function test_healPokemon_invalidData()
      {
          $pokemon = Pokemon::factory()->create();
 
@@ -265,8 +265,8 @@ class PokemonFeatureTest extends TestCase
          $response->assertStatus(500);
      }
 
-     // php artisan test --filter=PokemonFeatureTest::test_heal_on_invalid_id_pokemon
-     public function test_heal_on_invalid_id_pokemon()
+     // php artisan test --filter=PokemonFeatureTest::test_healPokemon_invalidId
+     public function test_healPokemon_invalidId()
      {
         $data = [
             "pokemon:id" => $this->invalidId
@@ -277,8 +277,8 @@ class PokemonFeatureTest extends TestCase
         $response->assertStatus(500);
      }
 
-    // php artisan test --filter=PokemonFeatureTest::test_update_on_success_pokemon
-    public function test_update_on_success_pokemon()
+    // php artisan test --filter=PokemonFeatureTest::test_updatePokemon_success
+    public function test_updatePokemon_success()
     {
         $pokemon = Pokemon::factory()->create();
 
@@ -293,8 +293,8 @@ class PokemonFeatureTest extends TestCase
         $this->assertDatabaseHas('pokemons', $dadosAtualizados);
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_update_pokemon_error_on_invalid_id
-    public function test_update_pokemon_error_on_invalid_id()
+    // php artisan test --filter=PokemonFeatureTest::test_updatePokemon_invalidId
+    public function test_updatePokemon_invalidId()
     {
         $dadosAtualizados = $this->getPokemonData();
 
@@ -302,8 +302,8 @@ class PokemonFeatureTest extends TestCase
         $response->assertStatus(500);
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_delete_error_on_valid_id_pokemon
-    public function test_delete_error_on_valid_id_pokemon()
+    // php artisan test --filter=PokemonFeatureTest::test_deletePokemon_success
+    public function test_deletePokemon_success()
     {
         $pokemon = Pokemon::factory()->create();
 
@@ -316,8 +316,8 @@ class PokemonFeatureTest extends TestCase
         ]);
     }
 
-    // php artisan test --filter=PokemonFeatureTest::test_delete_error_on_invalid_id_pokemon
-    public function test_delete_error_on_invalid_id_pokemon()
+    // php artisan test --filter=PokemonFeatureTest::test_deletePokemon_invalidId
+    public function test_deletePokemon_invalidId()
     {
         $response = $this->deleteJson("/api/pokemons/{$this->invalidId}");
 

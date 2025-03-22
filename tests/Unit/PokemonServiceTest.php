@@ -61,8 +61,8 @@ class PokemonServiceTest extends TestCase
         ];
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_get_pokemons
-    public function test_get_pokemons()
+    // php artisan test --filter=PokemonServiceTest::test_getPokemons_success
+    public function test_getPokemons_success()
     {
         $response = $this->pokemonService->getPokemons();
         $listarPokemons = $response['data'];
@@ -71,8 +71,8 @@ class PokemonServiceTest extends TestCase
         $this->assertInstanceOf(Collection::class, $listarPokemons);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_get_by_id_success_on_valid_id
-    public function test_get_by_id_success_on_valid_id_pokemon()
+    // php artisan test --filter=PokemonServiceTest::test_getPokemonById_success
+    public function test_getPokemonById_success()
     {
         $pokemon = Pokemon::factory()->create();
 
@@ -85,16 +85,16 @@ class PokemonServiceTest extends TestCase
         $this->assertEquals($id, $response['data']->id);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_get_by_id_error_on_invalid_id
-    public function test_get_by_id_error_on_invalid_id_pokemon()
+    // php artisan test --filter=PokemonServiceTest::test_getPokemonById_notFound
+    public function test_getPokemonById_notFound()
     {
         $this->expectException(ModelNotFoundException::class);
 
         $this->pokemonService->getById($this->invalidId);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_create_pokemon_on_success
-    public function test_create_pokemon_on_success()
+    // php artisan test --filter=PokemonServiceTest::test_createPokemon_success
+    public function test_createPokemon_success()
     {
         $data = $this->getPokemonData();
 
@@ -107,8 +107,8 @@ class PokemonServiceTest extends TestCase
         $this->assertInstanceOf(Pokemon::class, $pokemonCriado);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_failing_to_create_on_missing_field_pokemon
-    public function test_failing_to_create_on_missing_field_pokemon()
+    // php artisan test --filter=PokemonServiceTest::test_createPokemon_missingField
+    public function test_createPokemon_missingField()
     {
         $data = [
             'ataque' => 5,
@@ -127,8 +127,8 @@ class PokemonServiceTest extends TestCase
     }
 
     #[DataProvider('attackBattle')]
-    // php artisan test --filter=PokemonServiceTest::test_battle_success_pokemon
-    public function test_battle_success_pokemon($ataque1, $ataque2)
+    // php artisan test --filter=PokemonServiceTest::test_battlePokemon_success
+    public function test_battlePokemon_success($ataque1, $ataque2)
     {
         $pokemon1 = Pokemon::factory()->create(['ataque' =>$ataque1, 'vida_atual' => 1500]);
         $pokemon2 = Pokemon::factory()->create(['ataque' =>$ataque2, 'vida_atual' => 1000]);
@@ -143,8 +143,8 @@ class PokemonServiceTest extends TestCase
         $this->assertNotEquals($pokemon2->vida, $pokemon2->vida_atual);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_battle_pokemon_on_invalid_id
-    public function test_battle_pokemon_on_invalid_id()
+    // php artisan test --filter=PokemonServiceTest::test_battlePokemon_invalidId
+    public function test_battlePokemon_invalidId()
     {
         $this->expectException(ModelNotFoundException::class);
 
@@ -153,9 +153,9 @@ class PokemonServiceTest extends TestCase
         $this->pokemonService->battlePokemon($pokemon->id, 'sdsd');
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_multiples_success_round_battle_pokemon
+    // php artisan test --filter=PokemonServiceTest::test_battleRound_success
     #[DataProvider('attackAndDefense')]
-    public function test_multiples_success_round_battle_pokemon($ataque, $defesa)
+    public function test_battleRound_success($ataque, $defesa)
     {
         $pokemon1 = Pokemon::factory()->create(['ataque' => $ataque]);
         $pokemon2 = Pokemon::factory()->create(['defesa' => $defesa]);
@@ -165,8 +165,8 @@ class PokemonServiceTest extends TestCase
         $this->assertArrayHasKey('data', $response);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_heal_on_success_id_pokemon
-    public function test_heal_on_success_id_pokemon()
+    // php artisan test --filter=PokemonServiceTest::test_healPokemon_success
+    public function test_healPokemon_success()
     {
         $pokemon = Pokemon::factory()->create(['vida' => 50]);
         $pokemon->vida_atual = 20;
@@ -181,16 +181,16 @@ class PokemonServiceTest extends TestCase
         $this->assertEquals($pokemon->toArray(), $response['data']->toArray());
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_heal_pokemon_on_invalid_id
-    public function test_heal_pokemon_on_invalid_id()
+    // php artisan test --filter=PokemonServiceTest::test_healPokemon_invalidId
+    public function test_healPokemon_invalidId()
     {
         $this->expectException(ModelNotFoundException::class);
 
         $this->pokemonService->healPokemon($this->invalidId);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_update_on_success_pokemon
-    public function test_update_on_success_pokemon()
+    // php artisan test --filter=PokemonServiceTest::test_updatePokemon_success
+    public function test_updatePokemon_success()
     {
         $pokemon = Pokemon::factory()->create();
 
@@ -203,8 +203,8 @@ class PokemonServiceTest extends TestCase
         $this->assertInstanceOf(Pokemon::class, $response['data']);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_update_pokemon_error_on_invalid_id
-    public function test_update_pokemon_error_on_invalid_id()
+    // php artisan test --filter=PokemonServiceTest::test_updatePokemon_invalidId
+    public function test_updatePokemon_invalidId()
     {
         $this->expectException(ModelNotFoundException::class);
 
@@ -213,8 +213,8 @@ class PokemonServiceTest extends TestCase
         $this->pokemonService->updatePokemon($this->invalidId, $dadosAtualizados);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_delete_pokemon
-    public function test_delete_success_on_valid_id_pokemon()
+    // php artisan test --filter=PokemonServiceTest::test_deletePokemon_success
+    public function test_deletePokemon_success()
     {
         $pokemon = $this->pokemons->first();
 
@@ -225,8 +225,8 @@ class PokemonServiceTest extends TestCase
         ]);
     }
 
-    // php artisan test --filter=PokemonServiceTest::test_delete_error_on_invalid_id_pokemon
-    public function test_delete_error_on_invalid_id_pokemon()
+    // php artisan test --filter=PokemonServiceTest::test_deletePokemon_invalidId
+    public function test_deletePokemon_invalidId()
     {
         $this->expectException(ModelNotFoundException::class);
 
