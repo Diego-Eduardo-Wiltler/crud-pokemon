@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Pokemon;
 use App\Models\Treinador;
+use App\Models\TreinadorTrade;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -88,8 +88,7 @@ class TreinadorService
             $pokemon1 = $treinador1->pokemon_id;
             $pokemon2 = $treinador2->pokemon_id;
 
-            $treinador1->pokemon_id = $pokemon2;
-            $treinador2->pokemon_id = $pokemon1;
+            [$treinador1->pokemon_id, $treinador2->pokemon_id] = [$pokemon2, $pokemon1];
 
             $treinador1->save();
             $treinador2->save();
@@ -101,15 +100,24 @@ class TreinadorService
                 $treinador2,
             ];
 
-            $nomesPokemons = array_map(function ($treinador) {
-                return $treinador->pokemon->nome ?? 'Nada';
-            }, $treinadores);
+            TreinadorTrade::create([
+                'pokemon_id'     => $pokemon1,
+                'old_trainer_id' => $treinador1->id,
+                'new_trainer_id' => $treinador2->id,
+                'traded_at'      => now(),
+            ]);
+            TreinadorTrade::create([
+                'pokemon_id'     => $pokemon2,
+                'old_trainer_id' => $treinador2->id,
+                'new_trainer_id' => $treinador1->id,
+                'traded_at'      => now(),
+            ]);
 
             $trade_message = [
                 'Iniciando troca...',
-                'O treinador ' . $treinador1->nome . ' ofereceu ' . $nomesPokemons[1],
-                'Em troca' . ' o treinador ' . $treinador2->nome . ' ofereceu ' . $nomesPokemons[0],
-                'A troca foi realizada com sucesso...'
+                'O treinador ' . $treinador1->nome . ' ofereceu ' . ($treinador2->pokemon->nome ?? 'Nada'),
+                'Em troca, o treinador ' . $treinador2->nome . ' ofereceu ' . ($treinador1->pokemon->nome ?? 'Nada'),
+                'A troca foi realizada com sucesso...',
             ];
 
             return [
