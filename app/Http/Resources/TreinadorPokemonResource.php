@@ -21,6 +21,7 @@ class TreinadorPokemonResource extends JsonResource
             "regiao" => $this->regiao,
             "tipo_favorito" => $this->tipo_favorito,
             "idade" => $this->idade,
+            "trade" => new TreinadorTradeResource($this->latestTrade),
             'pokemons' => $this->pokemon ? new PokemonResource($this->pokemon) : 'Não possui pokemon'
         ];
     }
