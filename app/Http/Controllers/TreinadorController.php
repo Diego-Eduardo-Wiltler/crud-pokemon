@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TreinadorStoreFormRequest;
+use App\Http\Requests\TreinadorTradeFormRequest;
 use App\Http\Requests\TreinadorTradeRequest;
 use App\Http\Requests\TreinadorUpdateFormRequest;
 use App\Http\Resources\PokemonResource;
@@ -146,7 +147,7 @@ class TreinadorController extends Controller
         ]);
     }
 
-    public function storeTrade(TreinadorTradeRequest $request): JsonResponse
+    public function storeTrade(TreinadorTradeFormRequest $request): JsonResponse
     {
        $id1 = $request->input('treinador:id1');
        $id2 = $request->input('treinador:id2');
