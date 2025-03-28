@@ -13,17 +13,21 @@ class Treinador extends Model
 
     protected $fillable = [
         "nome",
-        'pokemon_id',
         "email",
         "regiao",
         "tipo_favorito",
         "idade",
         "pokemon_id"
-
-
     ];
+
     public function pokemon()
     {
         return $this->belongsTo(Pokemon::class);
+    }
+
+    public function latestTrade()
+    {
+        return $this->hasOne(TreinadorTrade::class, 'new_trainer_id')
+                    ->latest('traded_at');
     }
 }
