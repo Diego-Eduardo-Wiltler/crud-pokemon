@@ -150,18 +150,40 @@ class TreinadorServiceTest extends TestCase
     {
         $pokemons = Pokemon::factory()->count(2)->create();
 
-        $treinadores = Treinador::factory()->count(2)->create([
-            'pokemon_id' => fn () => $pokemons->random()->id,
-        ]);
+        $treinador1 = Treinador::factory()->create(['pokemon_id' => $pokemons[0]->id]);
+        $treinador2 = Treinador::factory()->create(['pokemon_id' => $pokemons[1]->id]);
 
-        $treinador1 = $treinadores->first()->id;
-        $treinador2 = $treinadores->get(1)->id;
-
-        $response = $this->treinadorService->storeTreinadorTrade($treinador1, $treinador2);
+        $response = $this->treinadorService->storeTreinadorTrade($treinador1->id, $treinador2->id);
 
         $this->assertCount(2, $response['data']);
         $this->assertArrayHasKey('data', $response);
         $this->assertArrayHasKey('trade_message', $response);
+    }
+
+    // php artisan test --filter=TreinadorServiceTest::test_tradeTreinadores_log_success
+    public function test_tradeTreinadores_log_success()
+    {
+        $pokemons = Pokemon::factory()->count(2)->create();
+
+        $treinador1 = Treinador::factory()->create(['pokemon_id' => $pokemons[0]->id]);
+        $treinador2 = Treinador::factory()->create(['pokemon_id' => $pokemons[1]->id]);
+
+        $pokemonOriginalTreinador1 = $treinador1->pokemon_id;
+        $pokemonOriginalTreinador2 = $treinador2->pokemon_id;
+
+        $this->treinadorService->storeTreinadorTrade($treinador1->id, $treinador2->id);
+
+        $this->assertDatabaseHas('treinador_trades', [
+            'pokemon_id'     => $pokemonOriginalTreinador1,
+            'old_trainer_id' => $treinador1->id,
+            'new_trainer_id' => $treinador2->id,
+        ]);
+
+        $this->assertDatabaseHas('treinador_trades', [
+            'pokemon_id'     => $pokemonOriginalTreinador2,
+            'old_trainer_id' => $treinador2->id,
+            'new_trainer_id' => $treinador1->id,
+        ]);
     }
 
     // php artisan test --filter=TreinadorServiceTest::test_tradeTreinadores_invalidId
