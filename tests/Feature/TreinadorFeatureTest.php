@@ -144,8 +144,10 @@ class TreinadorFeatureTest extends TestCase
     // php artisan test --filter=TreinadorFeatureTest::test_tradeTreinadores_success
     public function test_tradeTreinadores_success()
     {
-        $treinador1 = $this->treinadores->first();
-        $treinador2 = $this->treinadores->get(1);
+        $pokemons = Pokemon::factory()->count(2)->create();
+
+        $treinador1 = Treinador::factory()->create(["pokemon_id" => $pokemons[0]->id]);
+        $treinador2 = Treinador::factory()->create(["pokemon_id" => $pokemons[1]->id]);
 
         $data = [
             "treinador:id1" => $treinador1->id,
@@ -159,6 +161,53 @@ class TreinadorFeatureTest extends TestCase
         $this->assertDatabaseHas('treinadores', ['id' => $treinador1->id]);
         $this->assertDatabaseHas('treinadores', ['id' => $treinador2->id]);
     }
+
+    // php artisan test --filter=TreinadorFeatureTest::test_tradeTreinadoresLog_success
+    public function test_tradeTreinadoresLog_success()
+    {
+
+        $pokemons = Pokemon::factory()->count(2)->create();
+
+        $treinador1 = Treinador::factory()->create(['pokemon_id' => $pokemons[0]->id]);
+        $treinador2 = Treinador::factory()->create(['pokemon_id' => $pokemons[1]->id]);
+
+        $data = [
+            "treinador:id1" => $treinador1->id,
+            "treinador:id2" => $treinador2->id
+        ];
+
+        $response = $this->postJson('/api/treinadores-trade', $data);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('treinador_trades', [
+            'pokemon_id'     => $pokemons[0]->id,
+            'old_trainer_id' => $treinador1->id,
+            'new_trainer_id' => $treinador2->id,
+        ]);
+
+        $this->assertDatabaseHas('treinador_trades', [
+            'pokemon_id'     => $pokemons[1]->id,
+            'old_trainer_id' => $treinador2->id,
+            'new_trainer_id' => $treinador1->id,
+        ]);
+    }
+
+     // php artisan test --filter=TreinadorFeatureTest::test_tradeTreinadores_onNull
+     public function test_tradeTreinadores_onNull()
+     {
+         $treinador1 = Treinador::factory()->create(['pokemon_id' => null]);
+         $treinador2 = Treinador::factory()->create(['pokemon_id' => null]);
+
+         $data = [
+            "treinador:id1" => $treinador1->id,
+            "treinador:id2" => $treinador2->id
+        ];
+
+         $response = $this->postJson('/api/treinadores-trade', $data);
+
+         $response->assertStatus(500);
+     }
 
      // php artisan test --filter=TreinadorFeatureTest::test_tradeTreinadores_invalidId
      public function test_tradeTreinadores_invalidId()

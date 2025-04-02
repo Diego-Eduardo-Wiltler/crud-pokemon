@@ -160,8 +160,8 @@ class TreinadorServiceTest extends TestCase
         $this->assertArrayHasKey('trade_message', $response);
     }
 
-    // php artisan test --filter=TreinadorServiceTest::test_tradeTreinadores_log_success
-    public function test_tradeTreinadores_log_success()
+    // php artisan test --filter=TreinadorServiceTest::test_tradeTreinadoresLog_success
+    public function test_tradeTreinadoresLog_success()
     {
         $pokemons = Pokemon::factory()->count(2)->create();
 
@@ -184,6 +184,17 @@ class TreinadorServiceTest extends TestCase
             'old_trainer_id' => $treinador2->id,
             'new_trainer_id' => $treinador1->id,
         ]);
+    }
+
+    // php artisan test --filter=TreinadorServiceTest::test_tradeTreinadores_onNull
+    public function test_tradeTreinadores_onNull()
+    {
+        $this->expectException(\Exception::class);
+
+        $treinador1 = Treinador::factory()->create(['pokemon_id' => null]);
+        $treinador2 = Treinador::factory()->create(['pokemon_id' => null]);
+
+        $this->treinadorService->storeTreinadorTrade($treinador1->id, $treinador2->id);
     }
 
     // php artisan test --filter=TreinadorServiceTest::test_tradeTreinadores_invalidId
