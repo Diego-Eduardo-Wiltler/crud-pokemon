@@ -31,6 +31,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 500);
             }
 
+            if($exception instanceof Exception){
+                return response()->json([
+                    'message' => 'Something is not right.',
+                    'error' => null,
+                    'errorResponse' => 30,
+                ],500);
+            }
+
             return response()->json([
                 'message' => 'Something went wrong. Please try again later.',
                 'erros' => $exception->getMessage()
