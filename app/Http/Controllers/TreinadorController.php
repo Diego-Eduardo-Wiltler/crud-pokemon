@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TreinadorStoreFormRequest;
 use App\Http\Requests\TreinadorTradeFormRequest;
-use App\Http\Requests\TreinadorTradeRequest;
+
 use App\Http\Requests\TreinadorUpdateFormRequest;
 use App\Http\Resources\PokemonResource;
 use App\Http\Resources\TreinadorPokemonResource;
 use App\Http\Resources\TreinadorResource;
+use App\Jobs\ProcessTradePokemon;
 use App\Services\TreinadorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TreinadorController extends Controller
 {
@@ -149,15 +151,17 @@ class TreinadorController extends Controller
 
     public function storeTrade(TreinadorTradeFormRequest $request): JsonResponse
     {
-       $id1 = $request->input('treinador:id1');
-       $id2 = $request->input('treinador:id2');
+        $id1 = $request->input('treinador:id1');
+        $id2 = $request->input('treinador:id2');
 
-       $result = $this->treinadorService->storeTreinadorTrade($id1, $id2);
+        $result = $this->treinadorService->storeTreinadorTrade($id1, $id2);
 
-       return $this->successResponse([
-        'trade_message' => $result['trade_message'],
-        'treinadores' => TreinadorPokemonResource::collection($result['data'])
-       ]);
+        ProcessTradePokemon::dispatch($result['data'][0], $result['data'][1]);
+
+        return $this->successResponse([
+            'trade_message' => $result['trade_message'],
+            'treinadores' => TreinadorPokemonResource::collection($result['data'])
+        ]);
     }
 
     /**
